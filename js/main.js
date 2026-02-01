@@ -89,8 +89,8 @@ function renderModelRankingsTable(modelRanks) {
             rankIcon = '🥉';
         }
 
-        // Invert percentage: lower rank = longer bar (better performance)
-        const percentage = ((maxRank - data.avg_rank) / (maxRank - minRank)) * 80 + 20;
+        // Lower rank = shorter bar (better performance)
+        const percentage = ((data.avg_rank - minRank) / (maxRank - minRank)) * 80 + 20;
 
         html += `
             <tr>
