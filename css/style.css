@@ -534,27 +534,28 @@ body {
 
 /* === Citation Section === */
 .citation-box {
-    background: var(--color-gray-900);
+    background: #ffffff;
     border-radius: 1rem;
-    padding: 1.5rem;
+    padding: 1.5rem 2rem;
     max-width: 900px;
     margin: 0 auto;
     border: 1px solid var(--color-gray-200);
+    box-shadow: var(--shadow-md);
 }
 
 .citation-box pre {
     font-family: 'SF Mono', Monaco, 'Courier New', monospace;
     font-size: 0.85rem;
     line-height: 1.8;
-    color: #a5b4fc;
+    color: var(--color-gray-700);
     white-space: pre-wrap;
     word-wrap: break-word;
     margin: 0;
 }
 
-.citation-box .key { color: #fbbf24; }
-.citation-box .value { color: #86efac; }
-.citation-box .bracket { color: #f9a8d4; }
+.citation-box .key { color: #7c3aed; }
+.citation-box .value { color: #059669; }
+.citation-box .bracket { color: #db2777; }
 
 /* === Authors Section (Hero inline) === */
 .hero-authors {
