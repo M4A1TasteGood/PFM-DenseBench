@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes">
+    <title>Leaderboard | PFM-DenseBench</title>
+    <meta name="description" content="Benchmark leaderboard for Pathology Foundation Models on dense prediction tasks.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js for visualizations -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/leaderboard.css">
+</head>
+<body class="leaderboard-page">
+    
+    <!-- ==================== Header ==================== -->
+    <header class="lb-header">
+        <div class="container lb-header-inner">
+            <div class="lb-logo">
+                <a href="index.html" class="lb-logo-link">
+                    <span class="lb-logo-icon">🔬</span>
+                    <span class="lb-logo-text">PFM-DenseBench</span>
+                </a>
+            </div>
+            
+            <nav class="lb-nav">
+                <a href="index.html" class="lb-nav-link">
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146z"/>
+                    </svg>
+                    Home
+                </a>
+                <a href="#" class="lb-nav-link">
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                        <path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z"/>
+                    </svg>
+                    Submit Model
+                </a>
+                <a href="https://arxiv.org/abs/xxxx.xxxxx" target="_blank" rel="noopener noreferrer" class="lb-nav-link">
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zM5 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5z"/>
+                        <path d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5L9.5 0zm0 1v2A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z"/>
+                    </svg>
+                    Read Paper
+                </a>
+                <a href="https://github.com/your-repo/PFM-DenseBench" target="_blank" rel="noopener noreferrer" class="lb-nav-link">
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+                    </svg>
+                    GitHub
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ==================== Tab Navigation ==================== -->
+    <div class="lb-tabs-wrapper">
+        <div class="container">
+            <nav class="lb-tabs">
+                <button class="lb-tab" data-tab="overview">Overview</button>
+                <button class="lb-tab active" data-tab="leaderboard">Leaderboard</button>
+                <button class="lb-tab" data-tab="tasks">Tasks</button>
+                <button class="lb-tab" data-tab="performance">Performance</button>
+                <button class="lb-tab" data-tab="models">Models</button>
+            </nav>
+        </div>
+    </div>
+
+    <!-- ==================== Main Content ==================== -->
+    <main class="lb-main">
+        <div class="container">
+            
+            <!-- ========== Overview Tab ========== -->
+            <section id="tab-overview" class="lb-content" style="display: none;">
+                <div class="lb-overview-header">
+                    <h1>PFM-DenseBench Overview</h1>
+                    <p class="lb-overview-desc">
+                        A comprehensive benchmark evaluating Pathology Foundation Models on dense prediction tasks
+                    </p>
+                </div>
+                
+                <div class="lb-stats-cards">
+                    <div class="lb-stat-card">
+                        <div class="lb-stat-icon">🤖</div>
+                        <div class="lb-stat-value" id="stat-models">18</div>
+                        <div class="lb-stat-label">Foundation Models</div>
+                    </div>
+                    <div class="lb-stat-card">
+                        <div class="lb-stat-icon">📁</div>
+                        <div class="lb-stat-value" id="stat-datasets">18</div>
+                        <div class="lb-stat-label">Datasets</div>
+                    </div>
+                    <div class="lb-stat-card">
+                        <div class="lb-stat-icon">⚙️</div>
+                        <div class="lb-stat-value" id="stat-methods">5</div>
+                        <div class="lb-stat-label">Adaptation Methods</div>
+                    </div>
+                    <div class="lb-stat-card">
+                        <div class="lb-stat-icon">🧪</div>
+                        <div class="lb-stat-value" id="stat-experiments">1620</div>
+                        <div class="lb-stat-label">Total Experiments</div>
+                    </div>
+                </div>
+                
+                <div class="lb-overview-grid">
+                    <div class="lb-overview-section">
+                        <h3>📊 Task Categories</h3>
+                        <div class="lb-category-list">
+                            <div class="lb-category-item">
+                                <span class="lb-category-dot" style="background: #6366f1;"></span>
+                                <span class="lb-category-name">Nuclear Segmentation</span>
+                                <span class="lb-category-count">10 datasets</span>
+                            </div>
+                            <div class="lb-category-item">
+                                <span class="lb-category-dot" style="background: #f59e0b;"></span>
+                                <span class="lb-category-name">Gland Segmentation</span>
+                                <span class="lb-category-count">3 datasets</span>
+                            </div>
+                            <div class="lb-category-item">
+                                <span class="lb-category-dot" style="background: #10b981;"></span>
+                                <span class="lb-category-name">Tissue Segmentation</span>
+                                <span class="lb-category-count">5 datasets</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="lb-overview-section">
+                        <h3>⚙️ Adaptation Methods</h3>
+                        <div class="lb-method-list">
+                            <div class="lb-method-item">
+                                <span class="lb-method-dot" style="background: #3b82f6;"></span>
+                                <span>Frozen</span>
+                            </div>
+                            <div class="lb-method-item">
+                                <span class="lb-method-dot" style="background: #22c55e;"></span>
+                                <span>LoRA</span>
+                            </div>
+                            <div class="lb-method-item">
+                                <span class="lb-method-dot" style="background: #a855f7;"></span>
+                                <span>DoRA</span>
+                            </div>
+                            <div class="lb-method-item">
+                                <span class="lb-method-dot" style="background: #f97316;"></span>
+                                <span>CNN Adapter</span>
+                            </div>
+                            <div class="lb-method-item">
+                                <span class="lb-method-dot" style="background: #ec4899;"></span>
+                                <span>Transformer Adapter</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="lb-key-findings">
+                    <h3>🔑 Key Findings</h3>
+                    <div class="lb-findings-grid">
+                        <div class="lb-finding-card">
+                            <div class="lb-finding-icon">🏆</div>
+                            <h4>Top Performer</h4>
+                            <p id="finding-top-model">H-Optimus-0 achieves the best average rank across all experiments</p>
+                        </div>
+                        <div class="lb-finding-card">
+                            <div class="lb-finding-icon">⚙️</div>
+                            <h4>Best Adaptation</h4>
+                            <p id="finding-best-method">CNN Adapter provides the highest average mDice across all models</p>
+                        </div>
+                        <div class="lb-finding-card">
+                            <div class="lb-finding-icon">📈</div>
+                            <h4>Performance Range</h4>
+                            <p id="finding-range">mDice scores range from 0.35 to 0.95 depending on task difficulty</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========== Leaderboard Tab ========== -->
+            <section id="tab-leaderboard" class="lb-content">
+                <div class="lb-leaderboard-header">
+                    <div class="lb-leaderboard-info">
+                        <span>Viewing <strong id="lb-cohort-count">all 18 datasets</strong> across <strong>3 task categories</strong></span>
+                    </div>
+                    <div class="lb-view-toggle">
+                        <span>View:</span>
+                        <button class="lb-view-btn active" data-view="selected">Selected Cohorts</button>
+                        <button class="lb-view-btn" data-view="full">Full Leaderboard</button>
+                    </div>
+                </div>
+                
+                <h2 class="lb-section-title">
+                    <span class="lb-section-icon">📊</span>
+                    Model Rankings
+                </h2>
+                <div class="lb-model-count" id="lb-model-count">18 of 18 models</div>
+                
+                <div class="lb-charts-row">
+                    <!-- Top Models Chart -->
+                    <div class="lb-chart-card">
+                        <h3>🏆 Top 10 Models by Average Rank</h3>
+                        <p class="lb-chart-subtitle">Lower rank = better performance</p>
+                        <div class="lb-chart-container">
+                            <canvas id="chart-top-models"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- Performance by Category Chart -->
+                    <div class="lb-chart-card">
+                        <h3>📈 Performance by Task Category</h3>
+                        <p class="lb-chart-subtitle">Nuclear Segmentation • Gland Segmentation • Tissue Segmentation</p>
+                        <div class="lb-chart-legend" id="category-legend"></div>
+                        <div class="lb-chart-container">
+                            <canvas id="chart-category-performance"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Search and Table -->
+                <div class="lb-table-controls">
+                    <div class="lb-search-box">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                        </svg>
+                        <input type="text" id="model-search" placeholder="Search models...">
+                    </div>
+                    <div class="lb-table-info">
+                        All values are <strong>average ranks</strong> (lower is better)
+                    </div>
+                </div>
+                
+                <div class="lb-table-wrapper">
+                    <table class="lb-table" id="leaderboard-table">
+                        <thead>
+                            <tr>
+                                <th class="sortable" data-sort="rank">Rank <span class="sort-icon">▲</span></th>
+                                <th class="sortable" data-sort="model">Model</th>
+                                <th class="sortable" data-sort="overall">Overall <span class="sort-icon"></span></th>
+                                <th class="sortable" data-sort="nuclear">Nuclear Seg. <span class="sort-icon"></span></th>
+                                <th class="sortable" data-sort="gland">Gland Seg. <span class="sort-icon"></span></th>
+                                <th class="sortable" data-sort="tissue">Tissue Seg. <span class="sort-icon"></span></th>
+                            </tr>
+                        </thead>
+                        <tbody id="leaderboard-tbody">
+                            <tr>
+                                <td colspan="6" class="loading-cell">Loading data...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- ========== Tasks Tab ========== -->
+            <section id="tab-tasks" class="lb-content" style="display: none;">
+                <h2 class="lb-section-title">
+                    <span class="lb-section-icon">🎯</span>
+                    Performance by Task Category
+                </h2>
+                
+                <div class="lb-task-filter">
+                    <button class="lb-task-btn active" data-task="all">All Tasks</button>
+                    <button class="lb-task-btn" data-task="nuclear">Nuclear Segmentation</button>
+                    <button class="lb-task-btn" data-task="gland">Gland Segmentation</button>
+                    <button class="lb-task-btn" data-task="tissue">Tissue Segmentation</button>
+                </div>
+                
+                <!-- Task Category Cards -->
+                <div id="tasks-content">
+                    <div class="lb-task-cards" id="task-cards">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                    
+                    <div class="lb-dataset-table-section">
+                        <h3>📁 Dataset Results</h3>
+                        <div class="lb-table-wrapper">
+                            <table class="lb-table" id="tasks-table">
+                                <thead>
+                                    <tr>
+                                        <th>Category</th>
+                                        <th>Dataset</th>
+                                        <th>Best mDice</th>
+                                        <th>Best Model</th>
+                                        <th>Best Method</th>
+                                        <th>95% CI</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tasks-tbody">
+                                    <tr>
+                                        <td colspan="6" class="loading-cell">Loading data...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========== Performance Tab ========== -->
+            <section id="tab-performance" class="lb-content" style="display: none;">
+                <h2 class="lb-section-title">
+                    <span class="lb-section-icon">⚙️</span>
+                    Performance by Adaptation Method
+                </h2>
+                
+                <div class="lb-method-filter">
+                    <button class="lb-method-btn active" data-method="all">All Methods</button>
+                    <button class="lb-method-btn" data-method="frozen">Frozen</button>
+                    <button class="lb-method-btn" data-method="lora">LoRA</button>
+                    <button class="lb-method-btn" data-method="dora">DoRA</button>
+                    <button class="lb-method-btn" data-method="cnn">CNN Adapter</button>
+                    <button class="lb-method-btn" data-method="transformer">Trans. Adapter</button>
+                </div>
+                
+                <!-- Method Comparison Overview -->
+                <div class="lb-method-overview">
+                    <div class="lb-method-cards" id="method-cards">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+                
+                <!-- Method Performance Chart -->
+                <div class="lb-chart-card lb-chart-wide">
+                    <h3>📊 Method Performance Comparison</h3>
+                    <p class="lb-chart-subtitle">Average mDice score across all models and datasets</p>
+                    <div class="lb-chart-container-wide">
+                        <canvas id="chart-method-comparison"></canvas>
+                    </div>
+                </div>
+                
+                <!-- Detailed Method Table -->
+                <div class="lb-method-detail-section" id="method-detail-section">
+                    <h3 id="method-detail-title">Model Performance (All Methods)</h3>
+                    <div class="lb-table-wrapper">
+                        <table class="lb-table" id="method-table">
+                            <thead>
+                                <tr>
+                                    <th>Model</th>
+                                    <th>Frozen</th>
+                                    <th>LoRA</th>
+                                    <th>DoRA</th>
+                                    <th>CNN Adapter</th>
+                                    <th>Trans. Adapter</th>
+                                    <th>Best Method</th>
+                                </tr>
+                            </thead>
+                            <tbody id="method-tbody">
+                                <tr>
+                                    <td colspan="7" class="loading-cell">Loading data...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========== Models Tab ========== -->
+            <section id="tab-models" class="lb-content" style="display: none;">
+                <h2 class="lb-section-title">
+                    <span class="lb-section-icon">🤖</span>
+                    Model Details
+                </h2>
+                
+                <div class="lb-model-select-row">
+                    <label for="model-selector">Select Model:</label>
+                    <select id="model-selector" class="lb-model-selector">
+                        <!-- Will be populated by JavaScript -->
+                    </select>
+                </div>
+                
+                <!-- Model Info Card -->
+                <div class="lb-model-info-card" id="model-info-card">
+                    <div class="lb-model-header">
+                        <div class="lb-model-rank-badge" id="model-rank-badge">🥇</div>
+                        <div class="lb-model-title">
+                            <h3 id="model-name">H-Optimus-0</h3>
+                            <p id="model-rank-text">Rank #1 overall</p>
+                        </div>
+                    </div>
+                    <div class="lb-model-stats">
+                        <div class="lb-model-stat">
+                            <span class="lb-model-stat-label">Average Rank</span>
+                            <span class="lb-model-stat-value" id="model-avg-rank">4.28</span>
+                        </div>
+                        <div class="lb-model-stat">
+                            <span class="lb-model-stat-label">Best Performance</span>
+                            <span class="lb-model-stat-value" id="model-best-perf">0.9496</span>
+                        </div>
+                        <div class="lb-model-stat">
+                            <span class="lb-model-stat-label">Experiments</span>
+                            <span class="lb-model-stat-value" id="model-experiments">90</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Model Performance by Method -->
+                <div class="lb-chart-card lb-chart-wide">
+                    <h3>📊 Performance Across Adaptation Methods</h3>
+                    <div class="lb-chart-container-wide">
+                        <canvas id="chart-model-methods"></canvas>
+                    </div>
+                </div>
+                
+                <!-- Model Performance by Dataset -->
+                <div class="lb-model-dataset-section">
+                    <h3>📁 Performance by Dataset</h3>
+                    <div class="lb-table-wrapper">
+                        <table class="lb-table" id="model-dataset-table">
+                            <thead>
+                                <tr>
+                                    <th>Dataset</th>
+                                    <th>Category</th>
+                                    <th>Best mDice</th>
+                                    <th>Best Method</th>
+                                    <th>Rank in Dataset</th>
+                                </tr>
+                            </thead>
+                            <tbody id="model-dataset-tbody">
+                                <tr>
+                                    <td colspan="5" class="loading-cell">Loading data...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+            
+        </div>
+    </main>
+
+    <!-- ==================== Footer ==================== -->
+    <footer class="lb-footer">
+        <div class="container">
+            <div class="lb-footer-content">
+                <p>© 2026 PFM-DenseBench | H&G Pathology AI Research Team, Tsinghua University</p>
+                <div class="lb-footer-links">
+                    <a href="https://arxiv.org/abs/xxxx.xxxxx" target="_blank">Paper</a>
+                    <a href="https://github.com/your-repo/PFM-DenseBench" target="_blank">GitHub</a>
+                    <a href="index.html">Home</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/leaderboard.js"></script>
+</body>
+</html>
