@@ -209,15 +209,16 @@ body {
 /* === Stats Grid === */
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 1.5rem;
-    max-width: 900px;
+    max-width: 700px;
     margin: 0 auto;
 }
 
 @media (max-width: 768px) {
     .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(1, 1fr);
+        max-width: 200px;
     }
 }
 
@@ -457,18 +458,6 @@ body {
     background-color: var(--color-gray-50);
 }
 
-.data-table .category-badge {
-    display: inline-block;
-    padding: 0.25rem 0.75rem;
-    border-radius: 9999px;
-    font-size: 0.75rem;
-    font-weight: 500;
-}
-
-.badge-nuclear { background: #dbeafe; color: #1e40af; }
-.badge-gland { background: #d1fae5; color: #065f46; }
-.badge-tissue { background: #fce7f3; color: #9d174d; }
-
 .method-badge {
     display: inline-block;
     padding: 0.25rem 0.625rem;
@@ -500,27 +489,57 @@ body {
     color: var(--color-gray-900);
 }
 
+/* === Bar Chart Styles === */
+.bar-cell {
+    min-width: 200px;
+}
+
+.bar-container {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.bar-wrapper {
+    flex: 1;
+    height: 1.25rem;
+    background: var(--color-gray-100);
+    border-radius: 0.375rem;
+    overflow: hidden;
+    position: relative;
+}
+
+.bar-fill {
+    height: 100%;
+    border-radius: 0.375rem;
+    transition: width 0.5s ease-out;
+}
+
+.bar-fill-sota {
+    background: linear-gradient(90deg, #6366f1, #8b5cf6);
+}
+
+.bar-fill-rank {
+    background: linear-gradient(90deg, #10b981, #34d399);
+}
+
+.bar-value {
+    font-weight: 600;
+    font-size: 0.875rem;
+    font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+    color: var(--color-gray-800);
+    min-width: 50px;
+    text-align: right;
+}
+
 /* === Citation Section === */
-.citation-section {
-    background: linear-gradient(135deg, var(--color-gray-900), var(--color-gray-800));
-    color: white;
-}
-
-.citation-section .section-title {
-    color: white;
-}
-
-.citation-section .section-subtitle {
-    color: var(--color-gray-400);
-}
-
 .citation-box {
-    background: rgba(0, 0, 0, 0.3);
+    background: var(--color-gray-900);
     border-radius: 1rem;
     padding: 1.5rem;
     max-width: 900px;
     margin: 0 auto;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--color-gray-200);
 }
 
 .citation-box pre {
@@ -537,101 +556,50 @@ body {
 .citation-box .value { color: #86efac; }
 .citation-box .bracket { color: #f9a8d4; }
 
-/* === Authors Section === */
-.authors-list {
-    text-align: center;
-    margin-bottom: 2rem;
+/* === Authors Section (Hero inline) === */
+.hero-authors {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
 }
 
-.authors-text {
-    font-size: 1.125rem;
+.hero-authors-text {
+    font-size: 0.9rem;
     color: var(--color-gray-600);
     line-height: 1.8;
+    max-width: 900px;
+    margin: 0 auto;
 }
 
-.authors-text strong {
-    color: var(--color-gray-900);
-    font-weight: 600;
-}
-
-.authors-note {
-    font-size: 0.9rem;
-    color: var(--color-gray-500);
+.hero-authors-note {
+    font-size: 0.8rem;
+    color: var(--color-gray-400);
     margin-top: 0.5rem;
 }
 
-.affiliations {
+.hero-affiliations {
     display: flex;
     justify-content: center;
-    gap: 3rem;
+    gap: 2rem;
     flex-wrap: wrap;
-    margin-top: 2rem;
-}
-
-.affiliation {
-    text-align: center;
-}
-
-.affiliation-icon {
-    width: 5rem;
-    height: 5rem;
-    background: var(--color-gray-100);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2rem;
-    margin: 0 auto 0.75rem;
-}
-
-.affiliation-name {
-    font-weight: 600;
-    color: var(--color-gray-900);
-}
-
-.affiliation-location {
-    font-size: 0.875rem;
+    margin-top: 1rem;
+    font-size: 0.85rem;
     color: var(--color-gray-500);
 }
 
 /* === Footer === */
 .footer {
     background: var(--color-gray-50);
-    padding: 3rem 0;
+    padding: 2rem 0;
     border-top: 1px solid var(--color-gray-200);
     text-align: center;
-}
-
-.footer-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--color-gray-900);
-    margin-bottom: 1rem;
-}
-
-.footer-contact {
-    margin-bottom: 1.5rem;
-}
-
-.footer-contact p {
-    color: var(--color-gray-600);
-    margin-bottom: 0.25rem;
-}
-
-.footer-contact a {
-    color: var(--color-primary);
-    text-decoration: none;
-}
-
-.footer-contact a:hover {
-    text-decoration: underline;
 }
 
 .footer-links {
     display: flex;
     justify-content: center;
     gap: 2rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
 }
 
 .footer-links a {

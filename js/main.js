@@ -25,7 +25,7 @@ async function loadStats() {
 }
 
 /**
- * Render Dataset SOTA table
+ * Render Dataset SOTA table with bar charts
  */
 function renderDatasetSotaTable(datasetSota) {
     const tbody = document.getElementById('dataset-sota-tbody');
@@ -36,12 +36,23 @@ function renderDatasetSotaTable(datasetSota) {
         return b[1].mDice - a[1].mDice;
     });
 
+    // Get max value for scaling (use 1.0 as max for mDice)
+    const maxValue = 1.0;
+
     let html = '';
     sortedDatasets.forEach(([key, data]) => {
+        const percentage = (data.mDice / maxValue) * 100;
         html += `
             <tr>
                 <td><strong>${data.dataset_display}</strong></td>
-                <td class="score-value">${data.mDice_display}</td>
+                <td class="bar-cell">
+                    <div class="bar-container">
+                        <div class="bar-wrapper">
+                            <div class="bar-fill bar-fill-sota" style="width: ${percentage}%"></div>
+                        </div>
+                        <span class="bar-value">${data.mDice_display}</span>
+                    </div>
+                </td>
                 <td>${data.model}</td>
                 <td><span class="method-badge">${data.method}</span></td>
             </tr>
@@ -52,11 +63,15 @@ function renderDatasetSotaTable(datasetSota) {
 }
 
 /**
- * Render Model Rankings table
+ * Render Model Rankings table with bar charts
  */
 function renderModelRankingsTable(modelRanks) {
     const tbody = document.getElementById('model-ranks-tbody');
     if (!tbody) return;
+
+    // Get max rank for scaling (invert: lower rank = longer bar)
+    const maxRank = Math.max(...modelRanks.map(d => d.avg_rank));
+    const minRank = Math.min(...modelRanks.map(d => d.avg_rank));
 
     let html = '';
     modelRanks.forEach((data) => {
@@ -74,13 +89,23 @@ function renderModelRankingsTable(modelRanks) {
             rankIcon = '🥉';
         }
 
+        // Invert percentage: lower rank = longer bar (better performance)
+        const percentage = ((maxRank - data.avg_rank) / (maxRank - minRank)) * 80 + 20;
+
         html += `
             <tr>
                 <td>
                     <span class="rank-badge ${rankClass}">${data.position <= 3 ? rankIcon : data.position}</span>
                 </td>
                 <td><strong>${data.model_display}</strong></td>
-                <td class="score-value">${data.avg_rank_display}</td>
+                <td class="bar-cell">
+                    <div class="bar-container">
+                        <div class="bar-wrapper">
+                            <div class="bar-fill bar-fill-rank" style="width: ${percentage}%"></div>
+                        </div>
+                        <span class="bar-value">${data.avg_rank_display}</span>
+                    </div>
+                </td>
             </tr>
         `;
     });
