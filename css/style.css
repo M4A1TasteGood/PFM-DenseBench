@@ -318,6 +318,34 @@ body {
     line-height: 1.6;
 }
 
+/* === Main Figure === */
+.main-figure {
+    max-width: 1000px;
+    margin: 0 auto 3rem;
+    text-align: center;
+}
+
+.framework-image {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    border-radius: 1rem;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--color-gray-200);
+}
+
+.figure-caption {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: var(--color-gray-600);
+    line-height: 1.6;
+    text-align: center;
+}
+
+.figure-caption strong {
+    color: var(--color-gray-800);
+}
+
 /* === Benchmark Overview === */
 .overview-grid {
     display: grid;

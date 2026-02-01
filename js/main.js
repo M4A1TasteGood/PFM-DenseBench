@@ -5,14 +5,7 @@
 
 // Configuration
 const CONFIG = {
-    dataPath: 'data_computed/stats.json',
-    categoryOrder: ['Nuclear', 'Gland', 'Tissue', 'Other'],
-    categoryColors: {
-        'Nuclear': 'badge-nuclear',
-        'Gland': 'badge-gland',
-        'Tissue': 'badge-tissue',
-        'Other': 'badge-nuclear'
-    }
+    dataPath: 'data_computed/stats.json'
 };
 
 /**
@@ -38,22 +31,15 @@ function renderDatasetSotaTable(datasetSota) {
     const tbody = document.getElementById('dataset-sota-tbody');
     if (!tbody) return;
 
-    // Sort datasets by category first, then by mDice descending
+    // Sort datasets by mDice descending
     const sortedDatasets = Object.entries(datasetSota).sort((a, b) => {
-        const catA = CONFIG.categoryOrder.indexOf(a[1].category);
-        const catB = CONFIG.categoryOrder.indexOf(b[1].category);
-        if (catA !== catB) return catA - catB;
         return b[1].mDice - a[1].mDice;
     });
 
     let html = '';
     sortedDatasets.forEach(([key, data]) => {
-        const categoryClass = CONFIG.categoryColors[data.category] || 'badge-nuclear';
         html += `
             <tr>
-                <td>
-                    <span class="category-badge ${categoryClass}">${data.category}</span>
-                </td>
                 <td><strong>${data.dataset_display}</strong></td>
                 <td class="score-value">${data.mDice_display}</td>
                 <td>${data.model}</td>
@@ -95,7 +81,6 @@ function renderModelRankingsTable(modelRanks) {
                 </td>
                 <td><strong>${data.model_display}</strong></td>
                 <td class="score-value">${data.avg_rank_display}</td>
-                <td>${data.total_comparisons}</td>
             </tr>
         `;
     });
