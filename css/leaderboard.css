@@ -1284,11 +1284,11 @@
 
 
 
-/* Metric Cards Grid */
+/* Metric Cards Grid - 2 columns by default for better readability */
 .perf-metrics-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1rem;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
     padding: 1.5rem;
 }
 
@@ -1305,21 +1305,21 @@
     height: 1600px;
 }
 
-@media (max-width: 1400px) {
+@media (max-width: 1024px) {
+    .perf-metrics-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (min-width: 1600px) {
     .perf-metrics-grid {
         grid-template-columns: repeat(3, 1fr);
     }
 }
 
-@media (max-width: 1024px) {
+@media (min-width: 2000px) {
     .perf-metrics-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 640px) {
-    .perf-metrics-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(4, 1fr);
     }
 }
 
@@ -1327,18 +1327,34 @@
 .perf-metric-card {
     background: var(--color-gray-50);
     border-radius: 0.75rem;
-    padding: 1rem;
+    padding: 1rem 1.25rem;
     border: 1px solid var(--color-gray-100);
-    max-height: 600px;
+    max-height: 700px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    min-width: 400px;
 }
 
 .perf-metric-card .perf-chart-wrapper {
     flex: 1;
     overflow-y: auto;
     min-height: 0;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-gray-300) transparent;
+}
+
+.perf-metric-card .perf-chart-wrapper::-webkit-scrollbar {
+    width: 6px;
+}
+
+.perf-metric-card .perf-chart-wrapper::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.perf-metric-card .perf-chart-wrapper::-webkit-scrollbar-thumb {
+    background: var(--color-gray-300);
+    border-radius: 3px;
 }
 
 .perf-metric-header {
@@ -1363,12 +1379,17 @@
     color: var(--color-primary);
 }
 
-/* Metric Chart Container - 85 horizontal bars need ~1500px height */
+/* Metric Chart Container - 85 horizontal bars need adequate height */
 .perf-chart-wrapper {
-    height: 1500px;
+    height: 1800px;
     position: relative;
     overflow-y: auto;
     overflow-x: hidden;
+}
+
+/* Canvas inside wrapper should fill available space */
+.perf-chart-wrapper canvas {
+    width: 100% !important;
 }
 
 /* Method color indicators */

@@ -274,8 +274,8 @@ function renderChart(dataset, metricKey, metricData) {
                 data: sorted.map(d => d.mean),
                 backgroundColor: sorted.map(d => PERF_CONFIG.methodColors[d.method]),
                 borderRadius: 3,
-                barThickness: 14,
-                maxBarThickness: 16
+                barThickness: 16,
+                maxBarThickness: 20
             }]
         },
         options: {
@@ -284,7 +284,7 @@ function renderChart(dataset, metricKey, metricData) {
             maintainAspectRatio: false,
             animation: { duration: 150 },
             layout: {
-                padding: { left: 5, right: 15 }
+                padding: { left: 10, right: 20, top: 10, bottom: 10 }
             },
             plugins: {
                 legend: { display: false },
@@ -303,21 +303,26 @@ function renderChart(dataset, metricKey, metricData) {
                         }
                     },
                     backgroundColor: 'rgba(17,24,39,0.95)',
-                    padding: 10,
+                    padding: 12,
                     cornerRadius: 6
                 }
             },
             scales: {
                 x: {
                     beginAtZero: false,
-                    grid: { color: '#f0f0f0' },
-                    ticks: { font: { size: 9 }, callback: v => v.toFixed(2) }
+                    grid: { color: '#e5e7eb' },
+                    ticks: { 
+                        font: { size: 10 }, 
+                        callback: v => v.toFixed(2),
+                        padding: 5
+                    }
                 },
                 y: {
                     grid: { display: false },
                     ticks: { 
-                        font: { size: 9 },
-                        autoSkip: false
+                        font: { size: 11, weight: '500' },
+                        autoSkip: false,
+                        padding: 8
                     }
                 }
             }
