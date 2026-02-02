@@ -37,13 +37,6 @@
                     </svg>
                     Home
                 </a>
-                <a href="#" class="lb-nav-link">
-                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
-                        <path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z"/>
-                    </svg>
-                    Submit Model
-                </a>
                 <a href="https://arxiv.org/abs/xxxx.xxxxx" target="_blank" rel="noopener noreferrer" class="lb-nav-link">
                     <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                         <path d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zM5 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5z"/>
@@ -67,9 +60,8 @@
             <nav class="lb-tabs">
                 <button class="lb-tab" data-tab="overview">Overview</button>
                 <button class="lb-tab active" data-tab="leaderboard">Leaderboard</button>
-                <button class="lb-tab" data-tab="tasks">Tasks</button>
                 <button class="lb-tab" data-tab="performance">Performance</button>
-                <button class="lb-tab" data-tab="models">Models</button>
+                <button class="lb-tab" data-tab="models">Models & Datasets</button>
             </nav>
         </div>
     </div>
@@ -183,17 +175,6 @@
 
             <!-- ========== Leaderboard Tab ========== -->
             <section id="tab-leaderboard" class="lb-content">
-                <div class="lb-leaderboard-header">
-                    <div class="lb-leaderboard-info">
-                        <span>Viewing <strong id="lb-cohort-count">all 18 datasets</strong> across <strong>3 task categories</strong></span>
-                    </div>
-                    <div class="lb-view-toggle">
-                        <span>View:</span>
-                        <button class="lb-view-btn active" data-view="selected">Selected Cohorts</button>
-                        <button class="lb-view-btn" data-view="full">Full Leaderboard</button>
-                    </div>
-                </div>
-                
                 <h2 class="lb-section-title">
                     <span class="lb-section-icon">📊</span>
                     Model Rankings
@@ -253,51 +234,6 @@
                 </div>
             </section>
 
-            <!-- ========== Tasks Tab ========== -->
-            <section id="tab-tasks" class="lb-content" style="display: none;">
-                <h2 class="lb-section-title">
-                    <span class="lb-section-icon">🎯</span>
-                    Performance by Task Category
-                </h2>
-                
-                <div class="lb-task-filter">
-                    <button class="lb-task-btn active" data-task="all">All Tasks</button>
-                    <button class="lb-task-btn" data-task="nuclear">Nuclear Segmentation</button>
-                    <button class="lb-task-btn" data-task="gland">Gland Segmentation</button>
-                    <button class="lb-task-btn" data-task="tissue">Tissue Segmentation</button>
-                </div>
-                
-                <!-- Task Category Cards -->
-                <div id="tasks-content">
-                    <div class="lb-task-cards" id="task-cards">
-                        <!-- Will be populated by JavaScript -->
-                    </div>
-                    
-                    <div class="lb-dataset-table-section">
-                        <h3>📁 Dataset Results</h3>
-                        <div class="lb-table-wrapper">
-                            <table class="lb-table" id="tasks-table">
-                                <thead>
-                                    <tr>
-                                        <th>Category</th>
-                                        <th>Dataset</th>
-                                        <th>Best mDice</th>
-                                        <th>Best Model</th>
-                                        <th>Best Method</th>
-                                        <th>95% CI</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="tasks-tbody">
-                                    <tr>
-                                        <td colspan="6" class="loading-cell">Loading data...</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
             <!-- ========== Performance Tab ========== -->
             <section id="tab-performance" class="lb-content" style="display: none;">
                 <!-- Performance Header -->
@@ -330,15 +266,15 @@
                             </select>
                         </div>
                         <div class="perf-filter-item">
-                            <label for="perf-method-filter">Method:</label>
+                            <label for="perf-method-filter">Adaptation Strategy:</label>
                             <select id="perf-method-filter" class="perf-select">
-                                <option value="all">All Methods (5)</option>
+                                <option value="all">All Adaptation Strategies (5)</option>
                             </select>
                         </div>
                         <div class="perf-filter-item">
-                            <label for="perf-model-filter">Model:</label>
+                            <label for="perf-model-filter">PFM:</label>
                             <select id="perf-model-filter" class="perf-select">
-                                <option value="all">All Models (17)</option>
+                                <option value="all">All PFMs (17)</option>
                             </select>
                         </div>
                     </div>
