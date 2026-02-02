@@ -40,7 +40,6 @@ MODEL_DISPLAY_NAMES = {
     'uni_v2': 'UNI2-h',
     'virchow_v1': 'Virchow',
     'virchow_v2': 'Virchow2',
-    'patho3dmatrix-vision': 'Patho3DMatrix',
 }
 
 # Dataset display names

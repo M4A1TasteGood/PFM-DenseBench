@@ -1,39 +1,15 @@
 {
   "dataset_sota": {
-    "RINGS": {
-      "mDice": 0.9484333429336548,
-      "mDice_display": "0.9484",
-      "ci_lower": 0.9403090789914131,
-      "ci_upper": 0.955827784538269,
-      "model": "H-Optimus-1",
-      "model_key": "hoptimus_1",
-      "method": "LoRA",
-      "method_key": "lora",
-      "dataset_display": "RINGS",
-      "category": "Gland"
-    },
-    "Janowczyk": {
-      "mDice": 0.7169827926754951,
-      "mDice_display": "0.7170",
-      "ci_lower": 0.6783337101340294,
-      "ci_upper": 0.7562851518392563,
-      "model": "Kaiko-L",
-      "model_key": "kaiko-vitl14",
+    "CoNIC2022": {
+      "mDice": 0.6463057085871696,
+      "mDice_display": "0.6463",
+      "ci_lower": 0.6359343320131302,
+      "ci_upper": 0.6564045414328575,
+      "model": "UNI",
+      "model_key": "uni_v1",
       "method": "CNN Adapter",
       "method_key": "cnn",
-      "dataset_display": "Janowczyk",
-      "category": "Tissue"
-    },
-    "cpm17": {
-      "mDice": 0.9120195162296295,
-      "mDice_display": "0.9120",
-      "ci_lower": 0.8995961502194405,
-      "ci_upper": 0.9264180392026902,
-      "model": "H-Optimus-1",
-      "model_key": "hoptimus_1",
-      "method": "CNN Adapter",
-      "method_key": "cnn",
-      "dataset_display": "CPM17",
+      "dataset_display": "CoNIC2022",
       "category": "Nuclear"
     },
     "kumar": {
@@ -48,17 +24,17 @@
       "dataset_display": "Kumar",
       "category": "Nuclear"
     },
-    "CRAG": {
-      "mDice": 0.9446166177988052,
-      "mDice_display": "0.9446",
-      "ci_lower": 0.9253043666481972,
-      "ci_upper": 0.9605611383914947,
-      "model": "H-Optimus-0",
-      "model_key": "hoptimus_0",
-      "method": "DoRA",
-      "method_key": "dora",
-      "dataset_display": "CRAG",
-      "category": "Gland"
+    "EBHI": {
+      "mDice": 0.5003616006672382,
+      "mDice_display": "0.5004",
+      "ci_lower": 0.4844830073416233,
+      "ci_upper": 0.5132227256894112,
+      "model": "Virchow",
+      "model_key": "virchow_v1",
+      "method": "LoRA",
+      "method_key": "lora",
+      "dataset_display": "EBHI",
+      "category": "Tissue"
     },
     "COSAS24": {
       "mDice": 0.870243860065937,
@@ -72,6 +48,30 @@
       "dataset_display": "COSAS24",
       "category": "Tissue"
     },
+    "cpm17": {
+      "mDice": 0.9120195162296295,
+      "mDice_display": "0.9120",
+      "ci_lower": 0.8995961502194405,
+      "ci_upper": 0.9264180392026902,
+      "model": "H-Optimus-1",
+      "model_key": "hoptimus_1",
+      "method": "CNN Adapter",
+      "method_key": "cnn",
+      "dataset_display": "CPM17",
+      "category": "Nuclear"
+    },
+    "Janowczyk": {
+      "mDice": 0.7169827926754951,
+      "mDice_display": "0.7170",
+      "ci_lower": 0.6783337101340294,
+      "ci_upper": 0.7562851518392563,
+      "model": "Kaiko-L",
+      "model_key": "kaiko-vitl14",
+      "method": "CNN Adapter",
+      "method_key": "cnn",
+      "dataset_display": "Janowczyk",
+      "category": "Tissue"
+    },
     "WSSS4LUAD": {
       "mDice": 0.7284999625086784,
       "mDice_display": "0.7285",
@@ -83,30 +83,6 @@
       "method_key": "cnn",
       "dataset_display": "WSSS4LUAD",
       "category": "Tissue"
-    },
-    "CoNSeP": {
-      "mDice": 0.542058740913868,
-      "mDice_display": "0.5421",
-      "ci_lower": 0.36316159218549726,
-      "ci_upper": 0.6948253139853477,
-      "model": "H-Optimus-1",
-      "model_key": "hoptimus_1",
-      "method": "LoRA",
-      "method_key": "lora",
-      "dataset_display": "CoNSeP",
-      "category": "Nuclear"
-    },
-    "TNBC": {
-      "mDice": 0.8865912969708443,
-      "mDice_display": "0.8866",
-      "ci_lower": 0.8613467216491699,
-      "ci_upper": 0.9071858525276184,
-      "model": "H-Optimus-1",
-      "model_key": "hoptimus_1",
-      "method": "LoRA",
-      "method_key": "lora",
-      "dataset_display": "TNBC",
-      "category": "Nuclear"
     },
     "CoCaHis": {
       "mDice": 0.9277080337405205,
@@ -144,53 +120,29 @@
       "dataset_display": "BCSS",
       "category": "Tissue"
     },
-    "NuCLS": {
-      "mDice": 0.3513673105537891,
-      "mDice_display": "0.3514",
-      "ci_lower": 0.31829031333327296,
-      "ci_upper": 0.41858104467391966,
+    "CRAG": {
+      "mDice": 0.9446166177988052,
+      "mDice_display": "0.9446",
+      "ci_lower": 0.9253043666481972,
+      "ci_upper": 0.9605611383914947,
       "model": "H-Optimus-0",
       "model_key": "hoptimus_0",
-      "method": "CNN Adapter",
-      "method_key": "cnn",
-      "dataset_display": "NuCLS",
-      "category": "Nuclear"
-    },
-    "CoNIC2022": {
-      "mDice": 0.6463057085871696,
-      "mDice_display": "0.6463",
-      "ci_lower": 0.6359343320131302,
-      "ci_upper": 0.6564045414328575,
-      "model": "UNI",
-      "model_key": "uni_v1",
-      "method": "CNN Adapter",
-      "method_key": "cnn",
-      "dataset_display": "CoNIC2022",
-      "category": "Nuclear"
-    },
-    "PanNuke": {
-      "mDice": 0.6468324064612389,
-      "mDice_display": "0.6468",
-      "ci_lower": 0.6387821435928345,
-      "ci_upper": 0.6543306887149811,
-      "model": "H-Optimus-1",
-      "model_key": "hoptimus_1",
       "method": "DoRA",
       "method_key": "dora",
-      "dataset_display": "PanNuke",
-      "category": "Nuclear"
-    },
-    "GlaS": {
-      "mDice": 0.9495607097148895,
-      "mDice_display": "0.9496",
-      "ci_lower": 0.9376787021756172,
-      "ci_upper": 0.9595462739467621,
-      "model": "H-Optimus-1",
-      "model_key": "hoptimus_1",
-      "method": "DoRA",
-      "method_key": "dora",
-      "dataset_display": "GlaS",
+      "dataset_display": "CRAG",
       "category": "Gland"
+    },
+    "CoNSeP": {
+      "mDice": 0.542058740913868,
+      "mDice_display": "0.5421",
+      "ci_lower": 0.36316159218549726,
+      "ci_upper": 0.6948253139853477,
+      "model": "H-Optimus-1",
+      "model_key": "hoptimus_1",
+      "method": "LoRA",
+      "method_key": "lora",
+      "dataset_display": "CoNSeP",
+      "category": "Nuclear"
     },
     "Lizard": {
       "mDice": 0.4480581660270691,
@@ -204,195 +156,235 @@
       "dataset_display": "Lizard",
       "category": "Nuclear"
     },
-    "EBHI": {
-      "mDice": 0.5774419929981232,
-      "mDice_display": "0.5774",
-      "ci_lower": 0.5552476793527603,
-      "ci_upper": 0.5987618789076805,
-      "model": "Patho3DMatrix",
-      "model_key": "patho3dmatrix-vision",
+    "RINGS": {
+      "mDice": 0.9484333429336548,
+      "mDice_display": "0.9484",
+      "ci_lower": 0.9403090789914131,
+      "ci_upper": 0.955827784538269,
+      "model": "H-Optimus-1",
+      "model_key": "hoptimus_1",
+      "method": "LoRA",
+      "method_key": "lora",
+      "dataset_display": "RINGS",
+      "category": "Gland"
+    },
+    "PanNuke": {
+      "mDice": 0.6468324064612389,
+      "mDice_display": "0.6468",
+      "ci_lower": 0.6387821435928345,
+      "ci_upper": 0.6543306887149811,
+      "model": "H-Optimus-1",
+      "model_key": "hoptimus_1",
+      "method": "DoRA",
+      "method_key": "dora",
+      "dataset_display": "PanNuke",
+      "category": "Nuclear"
+    },
+    "NuCLS": {
+      "mDice": 0.3513673105537891,
+      "mDice_display": "0.3514",
+      "ci_lower": 0.31829031333327296,
+      "ci_upper": 0.41858104467391966,
+      "model": "H-Optimus-0",
+      "model_key": "hoptimus_0",
       "method": "CNN Adapter",
       "method_key": "cnn",
-      "dataset_display": "EBHI",
-      "category": "Tissue"
+      "dataset_display": "NuCLS",
+      "category": "Nuclear"
+    },
+    "TNBC": {
+      "mDice": 0.8865912969708443,
+      "mDice_display": "0.8866",
+      "ci_lower": 0.8613467216491699,
+      "ci_upper": 0.9071858525276184,
+      "model": "H-Optimus-1",
+      "model_key": "hoptimus_1",
+      "method": "LoRA",
+      "method_key": "lora",
+      "dataset_display": "TNBC",
+      "category": "Nuclear"
+    },
+    "GlaS": {
+      "mDice": 0.9495607097148895,
+      "mDice_display": "0.9496",
+      "ci_lower": 0.9376787021756172,
+      "ci_upper": 0.9595462739467621,
+      "model": "H-Optimus-1",
+      "model_key": "hoptimus_1",
+      "method": "DoRA",
+      "method_key": "dora",
+      "dataset_display": "GlaS",
+      "category": "Gland"
     }
   },
   "model_ranks": [
     {
-      "avg_rank": 4.277777777777778,
-      "avg_rank_display": "4.28",
+      "avg_rank": 4.0777777777777775,
+      "avg_rank_display": "4.08",
       "total_comparisons": 90,
       "model_display": "H-Optimus-0",
       "model_key": "hoptimus_0",
       "position": 1
     },
     {
-      "avg_rank": 4.6,
-      "avg_rank_display": "4.60",
+      "avg_rank": 4.355555555555555,
+      "avg_rank_display": "4.36",
       "total_comparisons": 90,
       "model_display": "H-Optimus-1",
       "model_key": "hoptimus_1",
       "position": 2
     },
     {
-      "avg_rank": 5.333333333333333,
-      "avg_rank_display": "5.33",
+      "avg_rank": 5.033333333333333,
+      "avg_rank_display": "5.03",
       "total_comparisons": 90,
       "model_display": "UNI2-h",
       "model_key": "uni_v2",
       "position": 3
     },
     {
-      "avg_rank": 6.833333333333333,
-      "avg_rank_display": "6.83",
+      "avg_rank": 6.455555555555556,
+      "avg_rank_display": "6.46",
       "total_comparisons": 90,
       "model_display": "Virchow",
       "model_key": "virchow_v1",
       "position": 4
     },
     {
-      "avg_rank": 7.8,
-      "avg_rank_display": "7.80",
-      "total_comparisons": 90,
-      "model_display": "Patho3DMatrix",
-      "model_key": "patho3dmatrix-vision",
-      "position": 5
-    },
-    {
-      "avg_rank": 8.133333333333333,
-      "avg_rank_display": "8.13",
+      "avg_rank": 7.644444444444445,
+      "avg_rank_display": "7.64",
       "total_comparisons": 90,
       "model_display": "Kaiko-L",
       "model_key": "kaiko-vitl14",
-      "position": 6
+      "position": 5
     },
     {
-      "avg_rank": 8.21111111111111,
-      "avg_rank_display": "8.21",
+      "avg_rank": 7.711111111111111,
+      "avg_rank_display": "7.71",
       "total_comparisons": 90,
       "model_display": "Lunit",
       "model_key": "lunit_vits8",
+      "position": 6
+    },
+    {
+      "avg_rank": 7.766666666666667,
+      "avg_rank_display": "7.77",
+      "total_comparisons": 90,
+      "model_display": "UNI",
+      "model_key": "uni_v1",
       "position": 7
+    },
+    {
+      "avg_rank": 7.966666666666667,
+      "avg_rank_display": "7.97",
+      "total_comparisons": 90,
+      "model_display": "CONCHv1.5",
+      "model_key": "conch_v1_5",
+      "position": 8
     },
     {
       "avg_rank": 8.28888888888889,
       "avg_rank_display": "8.29",
       "total_comparisons": 90,
-      "model_display": "UNI",
-      "model_key": "uni_v1",
-      "position": 8
-    },
-    {
-      "avg_rank": 8.522222222222222,
-      "avg_rank_display": "8.52",
-      "total_comparisons": 90,
-      "model_display": "CONCHv1.5",
-      "model_key": "conch_v1_5",
+      "model_display": "Hibou-L",
+      "model_key": "hibou_l",
       "position": 9
     },
     {
-      "avg_rank": 8.877777777777778,
-      "avg_rank_display": "8.88",
+      "avg_rank": 8.355555555555556,
+      "avg_rank_display": "8.36",
       "total_comparisons": 90,
       "model_display": "Prov-GigaPath",
       "model_key": "gigapath",
       "position": 10
     },
     {
-      "avg_rank": 8.877777777777778,
-      "avg_rank_display": "8.88",
-      "total_comparisons": 90,
-      "model_display": "Hibou-L",
-      "model_key": "hibou_l",
-      "position": 11
-    },
-    {
-      "avg_rank": 10.355555555555556,
-      "avg_rank_display": "10.36",
+      "avg_rank": 9.61111111111111,
+      "avg_rank_display": "9.61",
       "total_comparisons": 90,
       "model_display": "CONCH",
       "model_key": "conch_v1",
-      "position": 12
+      "position": 11
     },
     {
-      "avg_rank": 10.7,
-      "avg_rank_display": "10.70",
+      "avg_rank": 10.077777777777778,
+      "avg_rank_display": "10.08",
       "total_comparisons": 90,
       "model_display": "Virchow2",
       "model_key": "virchow_v2",
-      "position": 13
+      "position": 12
     },
     {
-      "avg_rank": 11.566666666666666,
-      "avg_rank_display": "11.57",
+      "avg_rank": 10.755555555555556,
+      "avg_rank_display": "10.76",
       "total_comparisons": 90,
       "model_display": "Phikon-v2",
       "model_key": "phikon_v2",
-      "position": 14
+      "position": 13
     },
     {
-      "avg_rank": 12.077777777777778,
-      "avg_rank_display": "12.08",
+      "avg_rank": 11.244444444444444,
+      "avg_rank_display": "11.24",
       "total_comparisons": 90,
       "model_display": "Phikon",
       "model_key": "phikon",
-      "position": 15
+      "position": 14
     },
     {
-      "avg_rank": 13.78888888888889,
-      "avg_rank_display": "13.79",
+      "avg_rank": 12.833333333333334,
+      "avg_rank_display": "12.83",
       "total_comparisons": 90,
       "model_display": "PathOrchestra",
       "model_key": "PathOrchestra",
-      "position": 16
+      "position": 15
     },
     {
-      "avg_rank": 15.577777777777778,
-      "avg_rank_display": "15.58",
+      "avg_rank": 14.61111111111111,
+      "avg_rank_display": "14.61",
       "total_comparisons": 90,
       "model_display": "Midnight-12k",
       "model_key": "midnight12k",
-      "position": 17
+      "position": 16
     },
     {
-      "avg_rank": 17.177777777777777,
-      "avg_rank_display": "17.18",
+      "avg_rank": 16.211111111111112,
+      "avg_rank_display": "16.21",
       "total_comparisons": 90,
       "model_display": "MUSK",
       "model_key": "musk",
-      "position": 18
+      "position": 17
     }
   ],
   "method_comparison": {
     "frozen": {
-      "avg_mDice": 0.6593186243140593,
-      "avg_mDice_display": "0.6593",
+      "avg_mDice": 0.659011992676245,
+      "avg_mDice_display": "0.6590",
       "method_display": "Frozen",
-      "num_experiments": 324
+      "num_experiments": 306
     },
     "lora": {
-      "avg_mDice": 0.6702899367669944,
-      "avg_mDice_display": "0.6703",
+      "avg_mDice": 0.669174815908805,
+      "avg_mDice_display": "0.6692",
       "method_display": "LoRA",
-      "num_experiments": 324
+      "num_experiments": 306
     },
     "dora": {
-      "avg_mDice": 0.6739627887573963,
-      "avg_mDice_display": "0.6740",
+      "avg_mDice": 0.6732502095660351,
+      "avg_mDice_display": "0.6733",
       "method_display": "DoRA",
-      "num_experiments": 324
+      "num_experiments": 306
     },
     "cnn": {
-      "avg_mDice": 0.7015073926239102,
-      "avg_mDice_display": "0.7015",
+      "avg_mDice": 0.7010493732402525,
+      "avg_mDice_display": "0.7010",
       "method_display": "CNN Adapter",
-      "num_experiments": 324
+      "num_experiments": 306
     },
     "transformer": {
-      "avg_mDice": 0.6576285496263959,
-      "avg_mDice_display": "0.6576",
+      "avg_mDice": 0.657337542419535,
+      "avg_mDice_display": "0.6573",
       "method_display": "Trans. Adapter",
-      "num_experiments": 324
+      "num_experiments": 306
     }
   }
 }
