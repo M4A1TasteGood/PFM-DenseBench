@@ -65,6 +65,9 @@ let perfState = {
     processedData: null,
     currentDataset: 'all',
     currentMetric: 'all',
+    currentMethod: 'all',
+    currentModel: 'all',
+    allModels: [],
     isLoaded: false
 };
 
@@ -183,6 +186,48 @@ function populateDatasetDropdown() {
     select.innerHTML = html;
 }
 
+function populateMethodDropdown() {
+    const select = document.getElementById('perf-method-filter');
+    if (!select) return;
+    
+    let html = '<option value="all">All Methods (5)</option>';
+    PERF_CONFIG.methods.forEach(m => {
+        const color = PERF_CONFIG.methodColors[m];
+        html += `<option value="${m}">${PERF_CONFIG.methodNames[m]}</option>`;
+    });
+    
+    select.innerHTML = html;
+}
+
+function populateModelDropdown() {
+    const select = document.getElementById('perf-model-filter');
+    if (!select || !perfState.processedData) return;
+    
+    // Collect all unique models from data
+    const modelSet = new Set();
+    Object.values(perfState.processedData).forEach(dataset => {
+        Object.values(dataset.metrics).forEach(metric => {
+            metric.data.forEach(item => modelSet.add(item.model));
+        });
+    });
+    
+    // Sort models by display name
+    const models = Array.from(modelSet).sort((a, b) => {
+        const nameA = PERF_CONFIG.modelDisplayNames[a] || a;
+        const nameB = PERF_CONFIG.modelDisplayNames[b] || b;
+        return nameA.localeCompare(nameB);
+    });
+    
+    perfState.allModels = models;
+    
+    let html = `<option value="all">All Models (${models.length})</option>`;
+    models.forEach(m => {
+        html += `<option value="${m}">${PERF_CONFIG.modelDisplayNames[m] || m}</option>`;
+    });
+    
+    select.innerHTML = html;
+}
+
 function renderDatasetCard(datasetKey, datasetData, metricFilter) {
     const metricsToShow = metricFilter === 'all' 
         ? PERF_CONFIG.metrics 
@@ -203,9 +248,23 @@ function renderDatasetCard(datasetKey, datasetData, metricFilter) {
 }
 
 function renderMetricCard(dataset, metric, metricData) {
-    const best = metricData?.best;
+    let data = metricData?.data || [];
+    
+    // Apply filters
+    const { currentMethod, currentModel } = perfState;
+    
+    if (currentMethod !== 'all') {
+        data = data.filter(item => item.method === currentMethod);
+    }
+    
+    if (currentModel !== 'all') {
+        data = data.filter(item => item.model === currentModel);
+    }
+    
+    // Re-sort and get best after filtering
+    data = [...data].sort((a, b) => b.mean - a.mean);
+    const best = data[0];
     const bestText = best ? `<strong>${formatNum(best.mean)}</strong> (${best.modelName} + ${best.methodName})` : 'No data';
-    const data = metricData?.data || [];
     
     // Build table rows
     let tableRows = '';
@@ -243,15 +302,15 @@ function renderMetricCard(dataset, metric, metricData) {
                 <table class="perf-table">
                     <thead>
                         <tr>
-                            <th style="width: 50px;">#</th>
-                            <th style="width: 100px;">Model</th>
-                            <th style="width: 80px;">Method</th>
-                            <th style="width: 80px;">Score</th>
-                            <th style="width: 120px;">95% CI</th>
+                            <th>#</th>
+                            <th>Model</th>
+                            <th>Method</th>
+                            <th>Score</th>
+                            <th>95% CI</th>
                         </tr>
                     </thead>
                     <tbody>
-                        ${tableRows || '<tr><td colspan="5" class="perf-no-data">No data</td></tr>'}
+                        ${tableRows || '<tr><td colspan="5" class="perf-no-data">No matching data</td></tr>'}
                     </tbody>
                 </table>
             </div>
@@ -285,6 +344,8 @@ function renderView() {
 function initFilters() {
     const datasetSelect = document.getElementById('perf-dataset-filter');
     const metricSelect = document.getElementById('perf-metric-filter');
+    const methodSelect = document.getElementById('perf-method-filter');
+    const modelSelect = document.getElementById('perf-model-filter');
     
     if (datasetSelect) {
         datasetSelect.addEventListener('change', e => {
@@ -296,6 +357,20 @@ function initFilters() {
     if (metricSelect) {
         metricSelect.addEventListener('change', e => {
             perfState.currentMetric = e.target.value;
+            renderView();
+        });
+    }
+    
+    if (methodSelect) {
+        methodSelect.addEventListener('change', e => {
+            perfState.currentMethod = e.target.value;
+            renderView();
+        });
+    }
+    
+    if (modelSelect) {
+        modelSelect.addEventListener('change', e => {
+            perfState.currentModel = e.target.value;
             renderView();
         });
     }
@@ -325,6 +400,8 @@ async function initPerformanceTab() {
     perfState.isLoaded = true;
     
     populateDatasetDropdown();
+    populateMethodDropdown();
+    populateModelDropdown();
     initFilters();
     renderView();
 }

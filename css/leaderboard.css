@@ -1193,10 +1193,10 @@
 .perf-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     margin-bottom: 2rem;
     flex-wrap: wrap;
-    gap: 1.5rem;
+    gap: 1rem;
     padding: 1.25rem 1.5rem;
     background: white;
     border-radius: 1rem;
@@ -1205,14 +1205,29 @@
 
 .perf-header .lb-section-title {
     margin-bottom: 0;
+    white-space: nowrap;
+}
+
+@media (max-width: 900px) {
+    .perf-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
 }
 
 /* Performance Filters */
 .perf-filters {
     display: flex;
     align-items: center;
-    gap: 1.5rem;
+    gap: 1rem;
     flex-wrap: wrap;
+}
+
+@media (max-width: 1200px) {
+    .perf-filters {
+        width: 100%;
+        justify-content: flex-start;
+    }
 }
 
 .perf-filter-item {
@@ -1229,14 +1244,14 @@
 }
 
 .perf-select {
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 0.75rem;
     border: 1px solid var(--color-gray-200);
     border-radius: 0.5rem;
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     color: var(--color-gray-700);
     background: white;
     cursor: pointer;
-    min-width: 180px;
+    min-width: 140px;
 }
 
 .perf-select:focus {
@@ -1333,7 +1348,7 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    min-width: 450px;
+    min-width: 500px;
 }
 
 .perf-metric-header {
@@ -1363,7 +1378,7 @@
 /* Table Wrapper */
 .perf-table-wrapper {
     flex: 1;
-    overflow-y: auto;
+    overflow: auto;
     min-height: 0;
     scrollbar-width: thin;
     scrollbar-color: var(--color-gray-300) transparent;
@@ -1373,6 +1388,7 @@
 
 .perf-table-wrapper::-webkit-scrollbar {
     width: 6px;
+    height: 6px;
 }
 
 .perf-table-wrapper::-webkit-scrollbar-track {
@@ -1387,15 +1403,18 @@
 /* Performance Table */
 .perf-table {
     width: 100%;
+    min-width: 480px;
     border-collapse: collapse;
     font-size: 0.8125rem;
+    table-layout: auto;
 }
 
 .perf-table th,
 .perf-table td {
-    padding: 0.5rem 0.625rem;
+    padding: 0.5rem 0.5rem;
     text-align: left;
     border-bottom: 1px solid var(--color-gray-100);
+    white-space: nowrap;
 }
 
 .perf-table th {
@@ -1422,16 +1441,18 @@
 .perf-rank-cell {
     font-weight: 600;
     text-align: center !important;
-    width: 40px;
+    min-width: 36px;
 }
 
 .perf-model-cell {
     font-weight: 600;
     color: var(--color-gray-800);
+    min-width: 80px;
 }
 
 .perf-method-cell {
     text-align: center !important;
+    min-width: 60px;
 }
 
 .perf-method-badge {
@@ -1447,6 +1468,7 @@
     font-family: 'SF Mono', Monaco, 'Courier New', monospace;
     font-weight: 600;
     color: var(--color-gray-700);
+    min-width: 70px;
 }
 
 .perf-score-top {
@@ -1457,6 +1479,7 @@
     font-family: 'SF Mono', Monaco, 'Courier New', monospace;
     font-size: 0.6875rem;
     color: var(--color-gray-500);
+    min-width: 100px;
 }
 
 /* No data state */
