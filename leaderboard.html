@@ -90,7 +90,7 @@
                 <div class="lb-stats-cards">
                     <div class="lb-stat-card">
                         <div class="lb-stat-icon">🤖</div>
-                        <div class="lb-stat-value" id="stat-models">18</div>
+                        <div class="lb-stat-value" id="stat-models">17</div>
                         <div class="lb-stat-label">Foundation Models</div>
                     </div>
                     <div class="lb-stat-card">
@@ -105,7 +105,7 @@
                     </div>
                     <div class="lb-stat-card">
                         <div class="lb-stat-icon">🧪</div>
-                        <div class="lb-stat-value" id="stat-experiments">1620</div>
+                        <div class="lb-stat-value" id="stat-experiments">1530</div>
                         <div class="lb-stat-label">Total Experiments</div>
                     </div>
                 </div>
@@ -198,25 +198,24 @@
                     <span class="lb-section-icon">📊</span>
                     Model Rankings
                 </h2>
-                <div class="lb-model-count" id="lb-model-count">18 of 18 models</div>
+                <div class="lb-model-count" id="lb-model-count">17 of 17 models</div>
                 
                 <div class="lb-charts-row">
-                    <!-- Top Models Chart -->
+                    <!-- Dataset SOTA Chart -->
                     <div class="lb-chart-card">
-                        <h3>🏆 Top 10 Models by Average Rank</h3>
-                        <p class="lb-chart-subtitle">Lower rank = better performance</p>
-                        <div class="lb-chart-container">
-                            <canvas id="chart-top-models"></canvas>
+                        <h3>📈 Dataset SOTA Results</h3>
+                        <p class="lb-chart-subtitle">Best mDice score achieved on each dataset</p>
+                        <div class="lb-chart-container lb-chart-container-tall">
+                            <canvas id="chart-dataset-sota"></canvas>
                         </div>
                     </div>
                     
-                    <!-- Performance by Category Chart -->
+                    <!-- Model Rankings Chart -->
                     <div class="lb-chart-card">
-                        <h3>📈 Performance by Task Category</h3>
-                        <p class="lb-chart-subtitle">Nuclear Segmentation • Gland Segmentation • Tissue Segmentation</p>
-                        <div class="lb-chart-legend" id="category-legend"></div>
-                        <div class="lb-chart-container">
-                            <canvas id="chart-category-performance"></canvas>
+                        <h3>🏆 Model Rankings</h3>
+                        <p class="lb-chart-subtitle">Average rank across all datasets (lower is better)</p>
+                        <div class="lb-chart-container lb-chart-container-tall">
+                            <canvas id="chart-model-ranks"></canvas>
                         </div>
                     </div>
                 </div>
@@ -230,25 +229,24 @@
                         <input type="text" id="model-search" placeholder="Search models...">
                     </div>
                     <div class="lb-table-info">
-                        All values are <strong>average ranks</strong> (lower is better)
+                        All values are <strong>average ranks per dataset</strong> (lower is better). Click column headers to sort.
                     </div>
                 </div>
                 
-                <div class="lb-table-wrapper">
-                    <table class="lb-table" id="leaderboard-table">
-                        <thead>
+                <div class="lb-table-wrapper lb-table-scrollable">
+                    <table class="lb-table lb-table-fixed" id="leaderboard-table">
+                        <thead id="leaderboard-thead">
+                            <!-- Will be populated by JavaScript with 18 dataset columns -->
                             <tr>
-                                <th class="sortable" data-sort="rank">Rank <span class="sort-icon">▲</span></th>
-                                <th class="sortable" data-sort="model">Model</th>
-                                <th class="sortable" data-sort="overall">Overall <span class="sort-icon"></span></th>
-                                <th class="sortable" data-sort="nuclear">Nuclear Seg. <span class="sort-icon"></span></th>
-                                <th class="sortable" data-sort="gland">Gland Seg. <span class="sort-icon"></span></th>
-                                <th class="sortable" data-sort="tissue">Tissue Seg. <span class="sort-icon"></span></th>
+                                <th class="sortable sticky-col" data-sort="rank">Rank</th>
+                                <th class="sortable sticky-col sticky-col-2" data-sort="model">Model</th>
+                                <th class="sortable" data-sort="overall">Overall</th>
+                                <!-- Dataset columns will be added by JS -->
                             </tr>
                         </thead>
                         <tbody id="leaderboard-tbody">
                             <tr>
-                                <td colspan="6" class="loading-cell">Loading data...</td>
+                                <td colspan="21" class="loading-cell">Loading data...</td>
                             </tr>
                         </tbody>
                     </table>

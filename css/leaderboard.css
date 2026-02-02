@@ -254,6 +254,11 @@
     position: relative;
 }
 
+.lb-chart-container-tall {
+    height: 420px;
+    position: relative;
+}
+
 .lb-chart-container-wide {
     height: 350px;
     position: relative;
@@ -1032,6 +1037,140 @@
 .lb-table-wrapper {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+}
+
+/* === Scrollable Table with Sticky Columns === */
+.lb-table-scrollable {
+    max-width: 100%;
+    overflow-x: auto;
+    position: relative;
+}
+
+.lb-table-fixed {
+    min-width: max-content;
+}
+
+.lb-table .sticky-col {
+    position: sticky;
+    left: 0;
+    background: var(--color-gray-50);
+    z-index: 2;
+    min-width: 60px;
+}
+
+.lb-table .sticky-col-2 {
+    left: 60px;
+    min-width: 120px;
+}
+
+.lb-table tbody .sticky-col {
+    background: white;
+}
+
+.lb-table tbody tr:hover .sticky-col {
+    background: var(--color-gray-50);
+}
+
+.lb-table .sticky-col-2::after {
+    content: '';
+    position: absolute;
+    right: -4px;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(to right, rgba(0,0,0,0.08), transparent);
+}
+
+/* Dataset column styling */
+.lb-table th[data-dataset],
+.lb-table td[data-dataset] {
+    min-width: 70px;
+    text-align: center;
+    font-size: 0.8125rem;
+}
+
+.lb-table th[data-dataset] {
+    white-space: nowrap;
+    font-size: 0.75rem;
+    padding: 0.625rem 0.5rem;
+    border-bottom: 3px solid transparent;
+}
+
+.lb-table th[data-dataset].cat-nuclear {
+    border-bottom-color: #6366f1;
+}
+
+.lb-table th[data-dataset].cat-gland {
+    border-bottom-color: #f59e0b;
+}
+
+.lb-table th[data-dataset].cat-tissue {
+    border-bottom-color: #10b981;
+}
+
+/* Rank cell styling */
+.lb-rank-cell {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 0.25rem;
+    font-weight: 600;
+    font-size: 0.8125rem;
+}
+
+.lb-rank-cell-1 {
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    color: #92400e;
+}
+
+.lb-rank-cell-2 {
+    background: linear-gradient(135deg, #e5e7eb, #d1d5db);
+    color: #374151;
+}
+
+.lb-rank-cell-3 {
+    background: linear-gradient(135deg, #fed7aa, #fdba74);
+    color: #9a3412;
+}
+
+.lb-rank-cell-top5 {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.lb-rank-cell-bottom {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+/* Sortable column headers */
+.lb-table th.sortable {
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.15s ease;
+}
+
+.lb-table th.sortable:hover {
+    background: var(--color-gray-100);
+}
+
+.lb-table th.sortable .sort-arrow {
+    display: inline-block;
+    margin-left: 0.25rem;
+    opacity: 0.3;
+    font-size: 0.625rem;
+}
+
+.lb-table th.sortable.sorted-asc .sort-arrow,
+.lb-table th.sortable.sorted-desc .sort-arrow {
+    opacity: 1;
+    color: var(--color-primary);
+}
+
+.lb-table th.sortable.sorted-desc .sort-arrow {
+    transform: rotate(180deg);
 }
 
 /* === Animation Utilities === */

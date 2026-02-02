@@ -31,6 +31,36 @@ const CONFIG = {
         Nuclear: ['CoNIC2022', 'CoNSeP', 'cpm15', 'cpm17', 'kumar', 'Kumar', 'Lizard', 'NuCLS', 'PanNuke', 'TNBC'],
         Gland: ['GlaS', 'CRAG', 'RINGS'],
         Tissue: ['BCSS', 'CoCaHis', 'COSAS24', 'EBHI', 'WSSS4LUAD', 'Janowczyk']
+    },
+    // Ordered list of all datasets for table columns (use actual keys from data)
+    allDatasets: [
+        // Nuclear (9)
+        'CoNIC2022', 'PanNuke', 'cpm15', 'cpm17', 'kumar', 'CoNSeP', 'TNBC', 'NuCLS', 'Lizard',
+        // Gland (3)
+        'GlaS', 'CRAG', 'RINGS',
+        // Tissue (6)
+        'BCSS', 'CoCaHis', 'COSAS24', 'EBHI', 'WSSS4LUAD', 'Janowczyk'
+    ],
+    datasetDisplayNames: {
+        'CoNIC2022': 'CoNIC22',
+        'PanNuke': 'PanNuke',
+        'cpm15': 'CPM15',
+        'cpm17': 'CPM17',
+        'kumar': 'Kumar',
+        'Kumar': 'Kumar',
+        'CoNSeP': 'CoNSeP',
+        'TNBC': 'TNBC',
+        'NuCLS': 'NuCLS',
+        'Lizard': 'Lizard',
+        'GlaS': 'GlaS',
+        'CRAG': 'CRAG',
+        'RINGS': 'RINGS',
+        'BCSS': 'BCSS',
+        'CoCaHis': 'CoCaHis',
+        'COSAS24': 'COSAS24',
+        'EBHI': 'EBHI',
+        'WSSS4LUAD': 'WSSS4L',
+        'Janowczyk': 'Janowczyk'
     }
 };
 
@@ -204,10 +234,71 @@ function computeDetailedStats(rawData, stats) {
         }
     }
     
+    // Compute per-dataset ranks (best rank across all methods for each model)
+    const modelDatasetRanks = computeModelDatasetRanks(rawData, stats.model_ranks);
+    
     return {
         modelCategoryRanks,
-        modelMethodPerformance
+        modelMethodPerformance,
+        modelDatasetRanks
     };
+}
+
+/**
+ * Compute per-dataset average ranks for each model
+ * For each dataset, we average the rank across all 5 methods
+ */
+function computeModelDatasetRanks(rawData, modelRanks) {
+    const modelDatasetRanks = {};
+    
+    // Initialize structure
+    for (const model of modelRanks) {
+        modelDatasetRanks[model.model_key] = {
+            model_display: model.model_display,
+            datasets: {}
+        };
+    }
+    
+    // Get all unique datasets
+    const allDatasets = new Set();
+    for (const methodData of Object.values(rawData)) {
+        for (const dataset of Object.keys(methodData)) {
+            allDatasets.add(dataset);
+        }
+    }
+    
+    // For each dataset, compute average rank across methods
+    for (const dataset of allDatasets) {
+        // Collect all ranks for each model across methods
+        const modelRanksByMethod = {};
+        
+        for (const [method, methodData] of Object.entries(rawData)) {
+            if (!methodData[dataset]) continue;
+            
+            // Get scores and compute ranks for this dataset-method combo
+            const scores = Object.entries(methodData[dataset])
+                .filter(([_, m]) => m.Mean_Dice)
+                .map(([model, m]) => ({ model, score: m.Mean_Dice.mean }))
+                .sort((a, b) => b.score - a.score);
+            
+            scores.forEach((item, idx) => {
+                if (!modelRanksByMethod[item.model]) {
+                    modelRanksByMethod[item.model] = [];
+                }
+                modelRanksByMethod[item.model].push(idx + 1);
+            });
+        }
+        
+        // Compute average rank for each model on this dataset
+        for (const [modelKey, ranks] of Object.entries(modelRanksByMethod)) {
+            if (modelDatasetRanks[modelKey]) {
+                const avgRank = ranks.reduce((a, b) => a + b, 0) / ranks.length;
+                modelDatasetRanks[modelKey].datasets[dataset] = avgRank;
+            }
+        }
+    }
+    
+    return modelDatasetRanks;
 }
 
 // ==================== Tab Management ====================
@@ -243,30 +334,99 @@ function initTabs() {
 // ==================== Chart Rendering ====================
 
 /**
- * Render Top Models horizontal bar chart
+ * Render Dataset SOTA horizontal bar chart (like main page)
  */
-function renderTopModelsChart(modelRanks) {
-    const ctx = document.getElementById('chart-top-models');
+function renderDatasetSotaChart(datasetSota) {
+    const ctx = document.getElementById('chart-dataset-sota');
     if (!ctx) return;
     
-    // Get top 10 models
-    const topModels = modelRanks.slice(0, 10);
+    // Sort datasets by mDice descending
+    const sortedDatasets = Object.entries(datasetSota)
+        .sort((a, b) => b[1].mDice - a[1].mDice);
     
     // Destroy existing chart
-    if (globalData.charts.topModels) {
-        globalData.charts.topModels.destroy();
+    if (globalData.charts.datasetSota) {
+        globalData.charts.datasetSota.destroy();
     }
     
-    globalData.charts.topModels = new Chart(ctx, {
+    // Color based on category
+    const colors = sortedDatasets.map(([_, data]) => CONFIG.categoryColors[data.category] || '#6b7280');
+    
+    globalData.charts.datasetSota = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: topModels.map(m => m.model_display),
+            labels: sortedDatasets.map(([_, d]) => d.dataset_display),
+            datasets: [{
+                label: 'mDice',
+                data: sortedDatasets.map(([_, d]) => d.mDice),
+                backgroundColor: colors,
+                borderRadius: 4,
+                barThickness: 18
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: (ctx) => {
+                            const data = sortedDatasets[ctx.dataIndex][1];
+                            return `mDice: ${data.mDice_display} (${data.model}, ${data.method})`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    max: 1,
+                    grid: { color: '#f3f4f6' },
+                    title: {
+                        display: true,
+                        text: 'mDice Score'
+                    }
+                },
+                y: {
+                    grid: { display: false }
+                }
+            }
+        }
+    });
+}
+
+/**
+ * Render Model Rankings horizontal bar chart (like main page)
+ */
+function renderModelRanksChart(modelRanks) {
+    const ctx = document.getElementById('chart-model-ranks');
+    if (!ctx) return;
+    
+    // Destroy existing chart
+    if (globalData.charts.modelRanks) {
+        globalData.charts.modelRanks.destroy();
+    }
+    
+    // Generate gradient colors from green (best) to red (worst)
+    const colors = modelRanks.map((_, idx) => {
+        const ratio = idx / (modelRanks.length - 1);
+        if (ratio < 0.33) return '#10b981'; // Green
+        if (ratio < 0.66) return '#f59e0b'; // Yellow/Orange
+        return '#ef4444'; // Red
+    });
+    
+    globalData.charts.modelRanks = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: modelRanks.map(m => m.model_display),
             datasets: [{
                 label: 'Average Rank',
-                data: topModels.map(m => m.avg_rank),
-                backgroundColor: '#6366f1',
+                data: modelRanks.map(m => m.avg_rank),
+                backgroundColor: colors,
                 borderRadius: 4,
-                barThickness: 20
+                barThickness: 18
             }]
         },
         options: {
@@ -286,102 +446,12 @@ function renderTopModelsChart(modelRanks) {
                     beginAtZero: true,
                     grid: { color: '#f3f4f6' },
                     title: {
-                        display: false
+                        display: true,
+                        text: 'Average Rank (lower is better)'
                     }
                 },
                 y: {
                     grid: { display: false }
-                }
-            }
-        }
-    });
-}
-
-/**
- * Render Category Performance grouped bar chart
- */
-function renderCategoryPerformanceChart(detailedStats, modelRanks) {
-    const ctx = document.getElementById('chart-category-performance');
-    if (!ctx) return;
-    
-    // Get top 10 models
-    const topModels = modelRanks.slice(0, 10);
-    const labels = topModels.map(m => m.model_display);
-    
-    // Destroy existing chart
-    if (globalData.charts.categoryPerf) {
-        globalData.charts.categoryPerf.destroy();
-    }
-    
-    const datasets = [
-        {
-            label: 'Nuclear Seg.',
-            data: topModels.map(m => detailedStats.modelCategoryRanks[m.model_key]?.NuclearAvg || 0),
-            backgroundColor: CONFIG.categoryColors.Nuclear,
-            borderRadius: 3
-        },
-        {
-            label: 'Gland Seg.',
-            data: topModels.map(m => detailedStats.modelCategoryRanks[m.model_key]?.GlandAvg || 0),
-            backgroundColor: CONFIG.categoryColors.Gland,
-            borderRadius: 3
-        },
-        {
-            label: 'Tissue Seg.',
-            data: topModels.map(m => detailedStats.modelCategoryRanks[m.model_key]?.TissueAvg || 0),
-            backgroundColor: CONFIG.categoryColors.Tissue,
-            borderRadius: 3
-        }
-    ];
-    
-    // Render legend
-    const legendContainer = document.getElementById('category-legend');
-    if (legendContainer) {
-        legendContainer.innerHTML = `
-            <span class="lb-chart-legend-item">
-                <span class="lb-chart-legend-dot" style="background: ${CONFIG.categoryColors.Nuclear}"></span>
-                Nuclear Seg.
-            </span>
-            <span class="lb-chart-legend-item">
-                <span class="lb-chart-legend-dot" style="background: ${CONFIG.categoryColors.Gland}"></span>
-                Gland Seg.
-            </span>
-            <span class="lb-chart-legend-item">
-                <span class="lb-chart-legend-dot" style="background: ${CONFIG.categoryColors.Tissue}"></span>
-                Tissue Seg.
-            </span>
-        `;
-    }
-    
-    globalData.charts.categoryPerf = new Chart(ctx, {
-        type: 'bar',
-        data: { labels, datasets },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { display: false },
-                tooltip: {
-                    callbacks: {
-                        label: (ctx) => `${ctx.dataset.label}: ${ctx.raw.toFixed(2)}`
-                    }
-                }
-            },
-            scales: {
-                x: {
-                    grid: { display: false },
-                    ticks: {
-                        maxRotation: 45,
-                        minRotation: 45
-                    }
-                },
-                y: {
-                    beginAtZero: true,
-                    grid: { color: '#f3f4f6' },
-                    title: {
-                        display: true,
-                        text: 'Average Rank'
-                    }
                 }
             }
         }
@@ -507,37 +577,209 @@ function renderModelMethodsChart(modelKey, detailedStats) {
 
 // ==================== Table Rendering ====================
 
+// Store current sort state
+let currentSort = { column: 'rank', direction: 'asc' };
+let tableData = []; // Store table data for sorting
+
 /**
- * Render Leaderboard table
+ * Get unique datasets from stats
  */
-function renderLeaderboardTable(modelRanks, detailedStats) {
-    const tbody = document.getElementById('leaderboard-tbody');
-    if (!tbody) return;
+function getUniqueDatasets(datasetSota) {
+    // Use predefined order from CONFIG, but only include datasets that exist in data
+    const existingDatasets = new Set(Object.keys(datasetSota));
+    return CONFIG.allDatasets.filter(d => existingDatasets.has(d) || existingDatasets.has(d.toLowerCase()));
+}
+
+/**
+ * Render Leaderboard table header with dataset columns
+ */
+function renderLeaderboardTableHeader(datasets) {
+    const thead = document.getElementById('leaderboard-thead');
+    if (!thead) return;
     
-    let html = '';
+    let html = `
+        <tr>
+            <th class="sortable sticky-col" data-sort="rank" data-type="number">
+                Rank <span class="sort-arrow">▲</span>
+            </th>
+            <th class="sortable sticky-col sticky-col-2" data-sort="model" data-type="string">
+                Model <span class="sort-arrow">▲</span>
+            </th>
+            <th class="sortable" data-sort="overall" data-type="number">
+                Overall <span class="sort-arrow">▲</span>
+            </th>
+    `;
     
-    modelRanks.forEach((model, idx) => {
-        const categoryData = detailedStats.modelCategoryRanks[model.model_key] || {};
-        
+    // Add dataset columns
+    datasets.forEach(dataset => {
+        const displayName = CONFIG.datasetDisplayNames[dataset] || dataset;
+        const category = getDatasetCategory(dataset);
+        const categoryClass = `cat-${category.toLowerCase()}`;
         html += `
-            <tr data-model="${model.model_key}">
-                <td>${getRankBadge(model.position)}</td>
-                <td><strong>${model.model_display}</strong></td>
-                <td><span class="lb-score-cell ${idx < 3 ? 'lb-score-best' : ''}">${model.avg_rank_display}</span></td>
-                <td>${formatNumber(categoryData.NuclearAvg || 0)}</td>
-                <td>${formatNumber(categoryData.GlandAvg || 0)}</td>
-                <td>${formatNumber(categoryData.TissueAvg || 0)}</td>
-            </tr>
+            <th class="sortable ${categoryClass}" data-sort="${dataset}" data-dataset="${dataset}" data-type="number" title="${dataset} (${category})">
+                ${displayName} <span class="sort-arrow">▲</span>
+            </th>
         `;
     });
     
-    tbody.innerHTML = html;
+    html += '</tr>';
+    thead.innerHTML = html;
+    
+    // Add click handlers for sorting
+    thead.querySelectorAll('th.sortable').forEach(th => {
+        th.addEventListener('click', () => handleSort(th.dataset.sort, th.dataset.type));
+    });
+}
+
+/**
+ * Get rank cell class based on rank
+ */
+function getRankCellClass(rank, totalModels) {
+    if (rank === 1) return 'lb-rank-cell lb-rank-cell-1';
+    if (rank === 2) return 'lb-rank-cell lb-rank-cell-2';
+    if (rank === 3) return 'lb-rank-cell lb-rank-cell-3';
+    if (rank <= 5) return 'lb-rank-cell lb-rank-cell-top5';
+    if (rank >= totalModels - 2) return 'lb-rank-cell lb-rank-cell-bottom';
+    return 'lb-rank-cell';
+}
+
+/**
+ * Render Leaderboard table body
+ */
+function renderLeaderboardTable(modelRanks, detailedStats, datasetSota) {
+    const datasets = getUniqueDatasets(datasetSota);
+    const totalModels = modelRanks.length;
+    
+    // Render header first
+    renderLeaderboardTableHeader(datasets);
+    
+    // Build table data
+    tableData = modelRanks.map((model, idx) => {
+        const datasetRanks = detailedStats.modelDatasetRanks[model.model_key]?.datasets || {};
+        
+        const row = {
+            rank: model.position,
+            model: model.model_display,
+            model_key: model.model_key,
+            overall: model.avg_rank,
+            overall_display: model.avg_rank_display,
+            isTop3: idx < 3
+        };
+        
+        // Add dataset ranks
+        datasets.forEach(dataset => {
+            // Try different key formats
+            row[dataset] = datasetRanks[dataset] || datasetRanks[dataset.toLowerCase()] || null;
+        });
+        
+        return row;
+    });
+    
+    // Store datasets in global for sorting
+    globalData.datasets = datasets;
+    globalData.totalModels = totalModels;
+    
+    // Render table
+    renderTableBody(tableData, datasets, totalModels);
     
     // Update model count
     const countEl = document.getElementById('lb-model-count');
     if (countEl) {
         countEl.textContent = `${modelRanks.length} of ${modelRanks.length} models`;
     }
+    
+    // Highlight current sort column
+    updateSortIndicator();
+}
+
+/**
+ * Render table body from data
+ */
+function renderTableBody(data, datasets, totalModels) {
+    const tbody = document.getElementById('leaderboard-tbody');
+    if (!tbody) return;
+    
+    let html = '';
+    
+    data.forEach((row) => {
+        html += `
+            <tr data-model="${row.model_key}">
+                <td class="sticky-col">${getRankBadge(row.rank)}</td>
+                <td class="sticky-col sticky-col-2"><strong>${row.model}</strong></td>
+                <td><span class="lb-score-cell ${row.isTop3 ? 'lb-score-best' : ''}">${row.overall_display}</span></td>
+        `;
+        
+        // Add dataset rank cells
+        datasets.forEach(dataset => {
+            const rank = row[dataset];
+            if (rank !== null && rank !== undefined) {
+                const rankClass = getRankCellClass(Math.round(rank), totalModels);
+                html += `<td data-dataset="${dataset}"><span class="${rankClass}">${rank.toFixed(1)}</span></td>`;
+            } else {
+                html += `<td data-dataset="${dataset}">-</td>`;
+            }
+        });
+        
+        html += '</tr>';
+    });
+    
+    tbody.innerHTML = html;
+}
+
+/**
+ * Handle sort click
+ */
+function handleSort(column, type) {
+    // Toggle direction if same column
+    if (currentSort.column === column) {
+        currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+    } else {
+        currentSort.column = column;
+        currentSort.direction = 'asc';
+    }
+    
+    // Sort data
+    const sortedData = [...tableData].sort((a, b) => {
+        let valA = a[column];
+        let valB = b[column];
+        
+        // Handle null values
+        if (valA === null || valA === undefined) valA = Infinity;
+        if (valB === null || valB === undefined) valB = Infinity;
+        
+        // String comparison for model names
+        if (type === 'string') {
+            valA = String(valA).toLowerCase();
+            valB = String(valB).toLowerCase();
+            return currentSort.direction === 'asc' 
+                ? valA.localeCompare(valB) 
+                : valB.localeCompare(valA);
+        }
+        
+        // Numeric comparison
+        return currentSort.direction === 'asc' ? valA - valB : valB - valA;
+    });
+    
+    // Re-render table body
+    renderTableBody(sortedData, globalData.datasets, globalData.totalModels);
+    
+    // Update sort indicator
+    updateSortIndicator();
+}
+
+/**
+ * Update sort indicator in header
+ */
+function updateSortIndicator() {
+    const thead = document.getElementById('leaderboard-thead');
+    if (!thead) return;
+    
+    thead.querySelectorAll('th.sortable').forEach(th => {
+        th.classList.remove('sorted-asc', 'sorted-desc');
+        if (th.dataset.sort === currentSort.column) {
+            th.classList.add(currentSort.direction === 'asc' ? 'sorted-asc' : 'sorted-desc');
+        }
+    });
 }
 
 /**
@@ -806,14 +1048,21 @@ function initSearch() {
     if (!searchInput) return;
     
     searchInput.addEventListener('input', (e) => {
-        const query = e.target.value.toLowerCase();
-        const rows = document.querySelectorAll('#leaderboard-tbody tr');
+        const query = e.target.value.toLowerCase().trim();
         
-        rows.forEach(row => {
-            const model = row.dataset.model || '';
-            const text = row.textContent.toLowerCase();
-            row.style.display = (text.includes(query) || model.toLowerCase().includes(query)) ? '' : 'none';
+        if (!query) {
+            // Show all rows if search is empty
+            renderTableBody(tableData, globalData.datasets, globalData.totalModels);
+            return;
+        }
+        
+        // Filter tableData
+        const filteredData = tableData.filter(row => {
+            return row.model.toLowerCase().includes(query) || 
+                   row.model_key.toLowerCase().includes(query);
         });
+        
+        renderTableBody(filteredData, globalData.datasets, globalData.totalModels);
     });
 }
 
@@ -898,9 +1147,9 @@ async function init() {
     initTabs();
     
     // Render Leaderboard tab
-    renderTopModelsChart(stats.model_ranks);
-    renderCategoryPerformanceChart(globalData.detailedStats, stats.model_ranks);
-    renderLeaderboardTable(stats.model_ranks, globalData.detailedStats);
+    renderDatasetSotaChart(stats.dataset_sota);
+    renderModelRanksChart(stats.model_ranks);
+    renderLeaderboardTable(stats.model_ranks, globalData.detailedStats, stats.dataset_sota);
     
     // Render Tasks tab
     renderTaskCards(stats.dataset_sota);
