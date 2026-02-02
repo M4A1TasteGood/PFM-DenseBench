@@ -323,6 +323,11 @@ function initTabs() {
                 content.style.display = content.id === `tab-${tabId}` ? 'block' : 'none';
             });
             
+            // Initialize Performance tab when clicked
+            if (tabId === 'performance' && typeof initPerformanceTab === 'function') {
+                initPerformanceTab();
+            }
+            
             // Trigger chart resize if needed
             setTimeout(() => {
                 window.dispatchEvent(new Event('resize'));
