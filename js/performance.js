@@ -153,19 +153,27 @@ function populateDatasetDropdown() {
     if (!select || !perfState.processedData) return;
     
     let html = '<option value="all">All Datasets (18)</option>';
-    html += '<optgroup label="Nuclear Segmentation">';
+    
+    // Nuclear datasets
+    html += '<optgroup label="── Nuclear ──">';
     PERF_CONFIG.datasetOrder.filter(d => PERF_CONFIG.datasetCategories.Nuclear.includes(d)).forEach(d => {
         if (perfState.processedData[d]) {
             html += `<option value="${d}">${perfState.processedData[d].name}</option>`;
         }
     });
-    html += '</optgroup><optgroup label="Gland Segmentation">';
+    html += '</optgroup>';
+    
+    // Gland datasets
+    html += '<optgroup label="── Gland ──">';
     PERF_CONFIG.datasetOrder.filter(d => PERF_CONFIG.datasetCategories.Gland.includes(d)).forEach(d => {
         if (perfState.processedData[d]) {
             html += `<option value="${d}">${perfState.processedData[d].name}</option>`;
         }
     });
-    html += '</optgroup><optgroup label="Tissue Segmentation">';
+    html += '</optgroup>';
+    
+    // Tissue datasets
+    html += '<optgroup label="── Tissue ──">';
     PERF_CONFIG.datasetOrder.filter(d => PERF_CONFIG.datasetCategories.Tissue.includes(d)).forEach(d => {
         if (perfState.processedData[d]) {
             html += `<option value="${d}">${perfState.processedData[d].name}</option>`;
@@ -177,7 +185,6 @@ function populateDatasetDropdown() {
 }
 
 function renderDatasetCard(datasetKey, datasetData, metricFilter) {
-    const catClass = datasetData.category.toLowerCase();
     const metricsToShow = metricFilter === 'all' 
         ? PERF_CONFIG.metrics 
         : PERF_CONFIG.metrics.filter(m => m.key === metricFilter);
@@ -187,7 +194,6 @@ function renderDatasetCard(datasetKey, datasetData, metricFilter) {
             <div class="perf-dataset-header">
                 <div class="perf-dataset-title">
                     <h3>${datasetData.name}</h3>
-                    <span class="perf-dataset-badge perf-dataset-badge-${catClass}">${datasetData.category}</span>
                 </div>
             </div>
             <div class="perf-metrics-grid ${metricsToShow.length === 1 ? 'single-metric' : ''}">
@@ -256,39 +262,32 @@ function renderChart(dataset, metricKey, metricData) {
     const canvas = document.getElementById(`chart-${dataset}-${metricKey}`);
     if (!canvas || !metricData?.data?.length) return;
     
-    // Group by model, take best method for each
-    const modelBest = {};
-    metricData.data.forEach(item => {
-        if (!modelBest[item.model] || item.mean > modelBest[item.model].mean) {
-            modelBest[item.model] = item;
-        }
-    });
-    
-    const sorted = Object.values(modelBest).sort((a, b) => b.mean - a.mean);
+    // Show all 85 bars: 17 models × 5 methods, sorted by mean descending
+    const sorted = [...metricData.data].sort((a, b) => b.mean - a.mean);
     
     const chartKey = `${dataset}-${metricKey}`;
     perfState.charts[chartKey] = new Chart(canvas, {
         type: 'bar',
         data: {
-            labels: sorted.map(d => d.modelName),
+            labels: sorted.map(d => `${d.modelName}+${d.methodName}`),
             datasets: [{
                 data: sorted.map(d => d.mean),
                 backgroundColor: sorted.map(d => PERF_CONFIG.methodColors[d.method]),
-                borderRadius: 3,
-                barPercentage: 0.85
+                borderRadius: 2,
+                barPercentage: 0.9,
+                categoryPercentage: 0.95
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            animation: { duration: 200 },
+            animation: { duration: 150 },
             plugins: {
                 legend: { display: false },
                 tooltip: {
                     callbacks: {
                         title: ctx => {
-                            const i = ctx[0].dataIndex;
-                            const item = sorted[i];
+                            const item = sorted[ctx[0].dataIndex];
                             return `${PERF_CONFIG.modelDisplayNames[item.model] || item.model} + ${PERF_CONFIG.methodNames[item.method]}`;
                         },
                         label: ctx => {
@@ -307,7 +306,9 @@ function renderChart(dataset, metricKey, metricData) {
             scales: {
                 x: {
                     grid: { display: false },
-                    ticks: { font: { size: 9 }, maxRotation: 45, minRotation: 45 }
+                    ticks: { 
+                        display: false // Hide x-axis labels due to 85 bars
+                    }
                 },
                 y: {
                     beginAtZero: false,
