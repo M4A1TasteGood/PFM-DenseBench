@@ -328,6 +328,11 @@ function initTabs() {
                 initPerformanceTab();
             }
             
+            // Initialize clickable tables when Models tab is shown
+            if (tabId === 'models') {
+                initClickableTables();
+            }
+            
             // Trigger chart resize if needed
             setTimeout(() => {
                 window.dispatchEvent(new Event('resize'));
@@ -1186,15 +1191,33 @@ async function init() {
 /**
  * Initialize clickable table rows for Models & Datasets tab
  */
+let clickableTablesInitialized = false;
 function initClickableTables() {
-    // Use event delegation on document for reliability
-    document.addEventListener('click', (e) => {
-        const row = e.target.closest('.md-clickable-table tr[data-url]');
-        if (row && row.dataset.url) {
-            e.preventDefault();
-            window.open(row.dataset.url, '_blank', 'noopener,noreferrer');
+    if (clickableTablesInitialized) return;
+    clickableTablesInitialized = true;
+    
+    console.log('Initializing clickable tables...');
+    
+    // Use event delegation on document body for maximum reliability
+    document.body.addEventListener('click', function(e) {
+        // Find the closest tr with data-url
+        let target = e.target;
+        while (target && target !== document.body) {
+            if (target.tagName === 'TR' && target.hasAttribute('data-url')) {
+                const url = target.getAttribute('data-url');
+                console.log('Clicked row with URL:', url);
+                if (url) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    window.open(url, '_blank', 'noopener,noreferrer');
+                }
+                return;
+            }
+            target = target.parentElement;
         }
-    });
+    }, true); // Use capture phase
+    
+    console.log('Clickable tables initialized');
 }
 
 // Run on page load
