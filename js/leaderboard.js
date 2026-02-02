@@ -713,8 +713,7 @@ function renderTableBody(data, datasets, totalModels) {
         datasets.forEach(dataset => {
             const rank = row[dataset];
             if (rank !== null && rank !== undefined) {
-                const rankClass = getRankCellClass(Math.round(rank), totalModels);
-                html += `<td data-dataset="${dataset}"><span class="${rankClass}">${rank.toFixed(1)}</span></td>`;
+                html += `<td data-dataset="${dataset}">${rank.toFixed(1)}</td>`;
             } else {
                 html += `<td data-dataset="${dataset}">-</td>`;
             }
