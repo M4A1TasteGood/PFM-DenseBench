@@ -1180,6 +1180,23 @@ async function init() {
     initSearch();
     initTaskFilter();
     initModelSelector();
+    initClickableTables();
+}
+
+/**
+ * Initialize clickable table rows for Models & Datasets tab
+ */
+function initClickableTables() {
+    const tables = document.querySelectorAll('.md-clickable-table');
+    
+    tables.forEach(table => {
+        table.addEventListener('click', (e) => {
+            const row = e.target.closest('tr[data-url]');
+            if (row && row.dataset.url) {
+                window.open(row.dataset.url, '_blank', 'noopener,noreferrer');
+            }
+        });
+    });
 }
 
 // Run on page load

@@ -286,70 +286,389 @@
                 </div>
             </section>
 
-            <!-- ========== Models Tab ========== -->
+            <!-- ========== Models & Datasets Tab ========== -->
             <section id="tab-models" class="lb-content" style="display: none;">
-                <h2 class="lb-section-title">
-                    <span class="lb-section-icon">🤖</span>
-                    Model Details
-                </h2>
                 
-                <div class="lb-model-select-row">
-                    <label for="model-selector">Select Model:</label>
-                    <select id="model-selector" class="lb-model-selector">
-                        <!-- Will be populated by JavaScript -->
-                    </select>
+                <!-- PFM Table -->
+                <div class="md-section">
+                    <h2 class="lb-section-title">
+                        <span class="lb-section-icon">🤖</span>
+                        Pathology Foundation Models
+                    </h2>
+                    <p class="md-section-desc">Click on a row to visit the model's official page</p>
+                    
+                    <div class="lb-table-wrapper lb-table-scrollable">
+                        <table class="lb-table md-clickable-table" id="pfm-table">
+                            <thead>
+                                <tr>
+                                    <th>PFM</th>
+                                    <th>Embed Dim</th>
+                                    <th>Slides</th>
+                                    <th>Patches</th>
+                                    <th>Params.</th>
+                                    <th>Architecture</th>
+                                    <th>Pretraining</th>
+                                    <th>Data Source</th>
+                                    <th>Stain</th>
+                                    <th>Released</th>
+                                    <th>Publication</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="md-category-row"><td colspan="11">Vision-only</td></tr>
+                                <tr data-url="https://huggingface.co/AI4Pathology/PathOrchestra">
+                                    <td><strong>PathOrchestra</strong></td>
+                                    <td>1024</td>
+                                    <td>300K</td>
+                                    <td>-</td>
+                                    <td>303M</td>
+                                    <td>ViT-L/16</td>
+                                    <td>DINOv2</td>
+                                    <td>In-house</td>
+                                    <td>H&E</td>
+                                    <td>Mar-25</td>
+                                    <td>npj Digital Med.</td>
+                                </tr>
+                                <tr data-url="https://huggingface.co/MahmoodLab/UNI">
+                                    <td><strong>UNI</strong></td>
+                                    <td>1024</td>
+                                    <td>100,426</td>
+                                    <td>100M</td>
+                                    <td>303M</td>
+                                    <td>ViT-L/16</td>
+                                    <td>DINOv2</td>
+                                    <td>GTEx, In-house</td>
+                                    <td>H&E</td>
+                                    <td>Aug-23</td>
+                                    <td>Nature Med.</td>
+                                </tr>
+                                <tr data-url="https://huggingface.co/MahmoodLab/UNI2-h">
+                                    <td><strong>UNI2-h</strong></td>
+                                    <td>1536</td>
+                                    <td>350K</td>
+                                    <td>200M</td>
+                                    <td>681M</td>
+                                    <td>ViT-H/14</td>
+                                    <td>DINOv2</td>
+                                    <td>GTEx, In-house</td>
+                                    <td>H&E, IHC</td>
+                                    <td>Jan-25</td>
+                                    <td>Nature Med.</td>
+                                </tr>
+                                <tr data-url="https://huggingface.co/paige-ai/Virchow">
+                                    <td><strong>Virchow</strong></td>
+                                    <td>1280</td>
+                                    <td>1,488,550</td>
+                                    <td>2.0B</td>
+                                    <td>631M</td>
+                                    <td>ViT-H/14</td>
+                                    <td>DINOv2</td>
+                                    <td>In-house</td>
+                                    <td>H&E</td>
+                                    <td>Sep-23</td>
+                                    <td>Nature Med.</td>
+                                </tr>
+                                <tr data-url="https://huggingface.co/paige-ai/Virchow2">
+                                    <td><strong>Virchow2</strong></td>
+                                    <td>1280</td>
+                                    <td>3,134,922</td>
+                                    <td>2.0B</td>
+                                    <td>631M</td>
+                                    <td>ViT-H/14</td>
+                                    <td>DINOv2</td>
+                                    <td>In-house</td>
+                                    <td>H&E, IHC</td>
+                                    <td>Aug-24</td>
+                                    <td>Preprint</td>
+                                </tr>
+                                <tr data-url="https://huggingface.co/owkin/phikon">
+                                    <td><strong>Phikon</strong></td>
+                                    <td>768</td>
+                                    <td>6,093</td>
+                                    <td>43.4M</td>
+                                    <td>86.4M</td>
+                                    <td>ViT-B/16</td>
+                                    <td>iBOT</td>
+                                    <td>TCGA</td>
+                                    <td>H&E</td>
+                                    <td>Jul-23</td>
+                                    <td>Preprint</td>
+                                </tr>
+                                <tr data-url="https://huggingface.co/owkin/phikon-v2">
+                                    <td><strong>Phikon-v2</strong></td>
+                                    <td>1024</td>
+                                    <td>58,359</td>
+                                    <td>456M</td>
+                                    <td>303M</td>
+                                    <td>ViT-L/16</td>
+                                    <td>DINOv2</td>
+                                    <td>132 Public</td>
+                                    <td>H&E, IHC</td>
+                                    <td>Sep-24</td>
+                                    <td>Preprint</td>
+                                </tr>
+                                <tr data-url="https://huggingface.co/prov-gigapath/prov-gigapath">
+                                    <td><strong>Prov-GigaPath</strong></td>
+                                    <td>1536</td>
+                                    <td>171K</td>
+                                    <td>1.4B</td>
+                                    <td>1.1B</td>
+                                    <td>ViT-G/14</td>
+                                    <td>DINOv2, MIM</td>
+                                    <td>In-house</td>
+                                    <td>H&E, IHC</td>
+                                    <td>May-24</td>
+                                    <td>Nature</td>
+                                </tr>
+                                <tr data-url="https://huggingface.co/bioptimus/H-optimus-0">
+                                    <td><strong>H-Optimus-0</strong></td>
+                                    <td>1536</td>
+                                    <td>500K</td>
+                                    <td>-</td>
+                                    <td>1.1B</td>
+                                    <td>ViT-G/14</td>
+                                    <td>iBOT, DINOv2</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>Aug-24</td>
+                                    <td>-</td>
+                                </tr>
+                                <tr data-url="https://huggingface.co/bioptimus/H-optimus-1">
+                                    <td><strong>H-Optimus-1</strong></td>
+                                    <td>1536</td>
+                                    <td>1M</td>
+                                    <td>2.0B</td>
+                                    <td>1.1B</td>
+                                    <td>ViT-G/14</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>Feb-25</td>
+                                    <td>-</td>
+                                </tr>
+                                <tr data-url="https://huggingface.co/kaiko-ai/midnight">
+                                    <td><strong>Midnight-12k</strong></td>
+                                    <td>1536</td>
+                                    <td>12K</td>
+                                    <td>-</td>
+                                    <td>1.1B</td>
+                                    <td>ViT-G/14</td>
+                                    <td>DINOv2</td>
+                                    <td>TCGA</td>
+                                    <td>H&E</td>
+                                    <td>Nov-24</td>
+                                    <td>Preprint</td>
+                                </tr>
+                                <tr data-url="https://huggingface.co/collections/1aurent/kaikoai-models-66636c99d8e1e34bc6dcf795">
+                                    <td><strong>Kaiko</strong></td>
+                                    <td>1024</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>304M</td>
+                                    <td>ViT-L/14</td>
+                                    <td>DINOv2</td>
+                                    <td>-</td>
+                                    <td>H&E</td>
+                                    <td>2024</td>
+                                    <td>Preprint</td>
+                                </tr>
+                                <tr data-url="https://github.com/lunit-io/benchmark-ssl-pathology">
+                                    <td><strong>Lunit</strong></td>
+                                    <td>384</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>21.7M</td>
+                                    <td>ViT-S/8</td>
+                                    <td>DINO</td>
+                                    <td>5 Public</td>
+                                    <td>H&E</td>
+                                    <td>2022</td>
+                                    <td>CVPR</td>
+                                </tr>
+                                <tr data-url="https://huggingface.co/histai/hibou-L">
+                                    <td><strong>Hibou-L</strong></td>
+                                    <td>1024</td>
+                                    <td>1.1M</td>
+                                    <td>1.2B</td>
+                                    <td>304M</td>
+                                    <td>ViT-L/14</td>
+                                    <td>DINOv2</td>
+                                    <td>-</td>
+                                    <td>H&E, others</td>
+                                    <td>Sep-24</td>
+                                    <td>Preprint</td>
+                                </tr>
+                                <tr class="md-category-row"><td colspan="11">Vision-Language</td></tr>
+                                <tr data-url="https://huggingface.co/MahmoodLab/CONCH">
+                                    <td><strong>CONCH</strong></td>
+                                    <td>768</td>
+                                    <td>21,442</td>
+                                    <td>1.17M</td>
+                                    <td>90.4M</td>
+                                    <td>ViT-B/16</td>
+                                    <td>iBOT, CoCa</td>
+                                    <td>PubMed, EDU</td>
+                                    <td>H&E, IHC</td>
+                                    <td>Jul-23</td>
+                                    <td>Nature Med.</td>
+                                </tr>
+                                <tr data-url="https://huggingface.co/MahmoodLab/conchv1_5">
+                                    <td><strong>CONCHv1.5</strong></td>
+                                    <td>1024</td>
+                                    <td>-</td>
+                                    <td>1.26M</td>
+                                    <td>306M</td>
+                                    <td>ViT-L/16</td>
+                                    <td>CoCa</td>
+                                    <td>-</td>
+                                    <td>H&E, IHC</td>
+                                    <td>Nov-24</td>
+                                    <td>-</td>
+                                </tr>
+                                <tr data-url="https://huggingface.co/xiangjx/musk">
+                                    <td><strong>MUSK</strong></td>
+                                    <td>1024</td>
+                                    <td>33K</td>
+                                    <td>1M</td>
+                                    <td>675M</td>
+                                    <td>ViT-L/16</td>
+                                    <td>BEiT3</td>
+                                    <td>PubMed, TCGA</td>
+                                    <td>H&E</td>
+                                    <td>Jan-25</td>
+                                    <td>Nature</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 
-                <!-- Model Info Card -->
-                <div class="lb-model-info-card" id="model-info-card">
-                    <div class="lb-model-header">
-                        <div class="lb-model-rank-badge" id="model-rank-badge">🥇</div>
-                        <div class="lb-model-title">
-                            <h3 id="model-name">H-Optimus-0</h3>
-                            <p id="model-rank-text">Rank #1 overall</p>
-                        </div>
-                    </div>
-                    <div class="lb-model-stats">
-                        <div class="lb-model-stat">
-                            <span class="lb-model-stat-label">Average Rank</span>
-                            <span class="lb-model-stat-value" id="model-avg-rank">4.28</span>
-                        </div>
-                        <div class="lb-model-stat">
-                            <span class="lb-model-stat-label">Best Performance</span>
-                            <span class="lb-model-stat-value" id="model-best-perf">0.9496</span>
-                        </div>
-                        <div class="lb-model-stat">
-                            <span class="lb-model-stat-label">Experiments</span>
-                            <span class="lb-model-stat-value" id="model-experiments">90</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Model Performance by Method -->
-                <div class="lb-chart-card lb-chart-wide">
-                    <h3>📊 Performance Across Adaptation Methods</h3>
-                    <div class="lb-chart-container-wide">
-                        <canvas id="chart-model-methods"></canvas>
-                    </div>
-                </div>
-                
-                <!-- Model Performance by Dataset -->
-                <div class="lb-model-dataset-section">
-                    <h3>📁 Performance by Dataset</h3>
+                <!-- Dataset Table -->
+                <div class="md-section" style="margin-top: 3rem;">
+                    <h2 class="lb-section-title">
+                        <span class="lb-section-icon">📁</span>
+                        Segmentation Datasets
+                    </h2>
+                    <p class="md-section-desc">Click on a row to visit the dataset's official page</p>
+                    
                     <div class="lb-table-wrapper">
-                        <table class="lb-table" id="model-dataset-table">
+                        <table class="lb-table md-clickable-table" id="dataset-table">
                             <thead>
                                 <tr>
                                     <th>Dataset</th>
-                                    <th>Category</th>
-                                    <th>Best mDice</th>
-                                    <th>Best Method</th>
-                                    <th>Rank in Dataset</th>
+                                    <th>Magnification</th>
+                                    <th>Anatomical Region</th>
+                                    <th>Resize (ViT-14/16)</th>
                                 </tr>
                             </thead>
-                            <tbody id="model-dataset-tbody">
-                                <tr>
-                                    <td colspan="5" class="loading-cell">Loading data...</td>
+                            <tbody>
+                                <tr data-url="https://github.com/PathologyDataScience/BCSS">
+                                    <td><strong>BCSS</strong></td>
+                                    <td>40x</td>
+                                    <td>Breast</td>
+                                    <td>952 / 944</td>
+                                </tr>
+                                <tr data-url="https://cocahis.irb.hr/">
+                                    <td><strong>CoCaHis</strong></td>
+                                    <td>40x</td>
+                                    <td>Liver</td>
+                                    <td>994 / 992</td>
+                                </tr>
+                                <tr data-url="https://conic-challenge.grand-challenge.org/">
+                                    <td><strong>CoNIC2022</strong></td>
+                                    <td>20x</td>
+                                    <td>Colon</td>
+                                    <td>252 / 256</td>
+                                </tr>
+                                <tr data-url="https://opendatalab.com/OpenDataLab/CoNSeP/tree/main">
+                                    <td><strong>CoNSeP</strong></td>
+                                    <td>40x</td>
+                                    <td>Colon</td>
+                                    <td>994 / 992</td>
+                                </tr>
+                                <tr data-url="https://cosas.grand-challenge.org/">
+                                    <td><strong>COSAS24</strong></td>
+                                    <td>-</td>
+                                    <td>Multi-organ</td>
+                                    <td>994 / 992</td>
+                                </tr>
+                                <tr data-url="https://drive.google.com/drive/folders/1l55cv3DuY-f7-JotDN7N5nbNnjbLWchK">
+                                    <td><strong>CPM15</strong></td>
+                                    <td>20x, 40x</td>
+                                    <td>Brain</td>
+                                    <td>392 / 384</td>
+                                </tr>
+                                <tr data-url="https://drive.google.com/drive/folders/1l55cv3DuY-f7-JotDN7N5nbNnjbLWchK">
+                                    <td><strong>CPM17</strong></td>
+                                    <td>20x, 40x</td>
+                                    <td>Multi-organ</td>
+                                    <td>490 / 496</td>
+                                </tr>
+                                <tr data-url="https://warwick.ac.uk/fac/cross_fac/tia/data/mildnet/">
+                                    <td><strong>CRAG</strong></td>
+                                    <td>20x</td>
+                                    <td>Colon</td>
+                                    <td>994 / 992</td>
+                                </tr>
+                                <tr data-url="https://www.kaggle.com/datasets/alibabaei78/ebhi-seg">
+                                    <td><strong>EBHI</strong></td>
+                                    <td>40x</td>
+                                    <td>Colon</td>
+                                    <td>224 / 224</td>
+                                </tr>
+                                <tr data-url="https://datasetninja.com/gland-segmentation">
+                                    <td><strong>GlaS</strong></td>
+                                    <td>20x</td>
+                                    <td>Colon</td>
+                                    <td>420 / 416</td>
+                                </tr>
+                                <tr data-url="https://andrewjanowczyk.com/use-case-1-nuclei-segmentation/">
+                                    <td><strong>Janowczyk</strong></td>
+                                    <td>40x</td>
+                                    <td>Breast</td>
+                                    <td>994 / 992</td>
+                                </tr>
+                                <tr data-url="https://drive.google.com/drive/folders/1bI3RyshWej9c4YoRW-_q7lh7FOFDFUrJ">
+                                    <td><strong>Kumar (MoNuSeg)</strong></td>
+                                    <td>40x</td>
+                                    <td>Multi-organ</td>
+                                    <td>994 / 992</td>
+                                </tr>
+                                <tr data-url="https://www.kaggle.com/datasets/aadimator/lizard-dataset">
+                                    <td><strong>Lizard</strong></td>
+                                    <td>20x</td>
+                                    <td>Colon</td>
+                                    <td>336 / 336</td>
+                                </tr>
+                                <tr data-url="https://nucls.grand-challenge.org/">
+                                    <td><strong>NuCLS</strong></td>
+                                    <td>40x</td>
+                                    <td>Breast</td>
+                                    <td>252 / 256</td>
+                                </tr>
+                                <tr data-url="https://warwick.ac.uk/fac/sci/dcs/research/tia/data/pannuke">
+                                    <td><strong>PanNuke</strong></td>
+                                    <td>40x</td>
+                                    <td>Pan-cancer</td>
+                                    <td>252 / 256</td>
+                                </tr>
+                                <tr data-url="https://data.mendeley.com/datasets/h8bdwrtnr5/1">
+                                    <td><strong>RINGS</strong></td>
+                                    <td>100x</td>
+                                    <td>Prostate</td>
+                                    <td>994 / 992</td>
+                                </tr>
+                                <tr data-url="https://peterjacknaylor.github.io/data/">
+                                    <td><strong>TNBC</strong></td>
+                                    <td>40x</td>
+                                    <td>Breast</td>
+                                    <td>504 / 512</td>
+                                </tr>
+                                <tr data-url="https://wsss4luad.grand-challenge.org/">
+                                    <td><strong>WSSS4LUAD</strong></td>
+                                    <td>10x</td>
+                                    <td>Lung</td>
+                                    <td>196 / 192</td>
                                 </tr>
                             </tbody>
                         </table>

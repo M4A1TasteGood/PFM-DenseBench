@@ -1481,3 +1481,79 @@
     color: var(--color-gray-400);
     font-size: 0.9375rem;
 }
+
+/* ========================================
+   Models & Datasets Tab Styles
+   ======================================== */
+
+.md-section {
+    margin-bottom: 2rem;
+}
+
+.md-section-desc {
+    color: var(--color-gray-500);
+    font-size: 0.875rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Clickable table rows */
+.md-clickable-table tbody tr[data-url] {
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.md-clickable-table tbody tr[data-url]:hover {
+    background: var(--color-primary-light, #eef2ff);
+    transform: translateX(2px);
+}
+
+.md-clickable-table tbody tr[data-url]:hover td {
+    color: var(--color-primary);
+}
+
+.md-clickable-table tbody tr[data-url]:hover td strong {
+    text-decoration: underline;
+}
+
+/* Category row styling */
+.md-category-row {
+    background: var(--color-gray-100) !important;
+    cursor: default !important;
+}
+
+.md-category-row td {
+    font-weight: 600;
+    color: var(--color-gray-600);
+    font-size: 0.8125rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.5rem 1rem !important;
+}
+
+.md-category-row:hover {
+    transform: none !important;
+    background: var(--color-gray-100) !important;
+}
+
+/* PFM table specific */
+#pfm-table td,
+#pfm-table th {
+    font-size: 0.8125rem;
+    padding: 0.625rem 0.75rem;
+    white-space: nowrap;
+}
+
+#pfm-table td:first-child {
+    min-width: 120px;
+}
+
+/* Dataset table specific */
+#dataset-table td,
+#dataset-table th {
+    font-size: 0.875rem;
+    padding: 0.75rem 1rem;
+}
+
+#dataset-table td:first-child {
+    min-width: 140px;
+}
