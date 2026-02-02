@@ -63,7 +63,6 @@ const PERF_CONFIG = {
 let perfState = {
     rawData: null,
     processedData: null,
-    charts: {},
     currentDataset: 'all',
     currentMetric: 'all',
     isLoaded: false
@@ -206,6 +205,33 @@ function renderDatasetCard(datasetKey, datasetData, metricFilter) {
 function renderMetricCard(dataset, metric, metricData) {
     const best = metricData?.best;
     const bestText = best ? `<strong>${formatNum(best.mean)}</strong> (${best.modelName} + ${best.methodName})` : 'No data';
+    const data = metricData?.data || [];
+    
+    // Build table rows
+    let tableRows = '';
+    data.forEach((item, idx) => {
+        const rank = idx + 1;
+        let rankBadge = rank;
+        if (rank === 1) rankBadge = '🥇';
+        else if (rank === 2) rankBadge = '🥈';
+        else if (rank === 3) rankBadge = '🥉';
+        
+        const methodColor = PERF_CONFIG.methodColors[item.method] || '#6b7280';
+        
+        tableRows += `
+            <tr>
+                <td class="perf-rank-cell">${rankBadge}</td>
+                <td class="perf-model-cell">${item.modelName}</td>
+                <td class="perf-method-cell">
+                    <span class="perf-method-badge" style="background: ${methodColor}20; color: ${methodColor}; border: 1px solid ${methodColor}40;">
+                        ${item.methodName}
+                    </span>
+                </td>
+                <td class="perf-score-cell ${rank <= 3 ? 'perf-score-top' : ''}">${formatNum(item.mean)}</td>
+                <td class="perf-ci-cell">[${formatNum(item.ci_lower, 3)}, ${formatNum(item.ci_upper, 3)}]</td>
+            </tr>
+        `;
+    });
     
     return `
         <div class="perf-metric-card" data-metric="${metric.key}">
@@ -213,8 +239,21 @@ function renderMetricCard(dataset, metric, metricData) {
                 <span class="perf-metric-name">${metric.name}</span>
                 <span class="perf-metric-best">Best: ${bestText}</span>
             </div>
-            <div class="perf-chart-wrapper">
-                <canvas id="chart-${dataset}-${metric.key}"></canvas>
+            <div class="perf-table-wrapper">
+                <table class="perf-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;">#</th>
+                            <th style="width: 100px;">Model</th>
+                            <th style="width: 80px;">Method</th>
+                            <th style="width: 80px;">Score</th>
+                            <th style="width: 120px;">95% CI</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${tableRows || '<tr><td colspan="5" class="perf-no-data">No data</td></tr>'}
+                    </tbody>
+                </table>
             </div>
         </div>
     `;
@@ -223,10 +262,6 @@ function renderMetricCard(dataset, metric, metricData) {
 function renderView() {
     const container = document.getElementById('perf-datasets-container');
     if (!container || !perfState.processedData) return;
-    
-    // Destroy all existing charts
-    Object.values(perfState.charts).forEach(c => c.destroy());
-    perfState.charts = {};
     
     const { currentDataset, currentMetric } = perfState;
     
@@ -243,92 +278,8 @@ function renderView() {
     container.innerHTML = datasetsToShow.map(d => 
         renderDatasetCard(d, perfState.processedData[d], currentMetric)
     ).join('');
-    
-    // Render charts after DOM update
-    requestAnimationFrame(() => {
-        datasetsToShow.forEach(dataset => {
-            const metricsToRender = currentMetric === 'all'
-                ? PERF_CONFIG.metrics
-                : PERF_CONFIG.metrics.filter(m => m.key === currentMetric);
-            
-            metricsToRender.forEach(metric => {
-                renderChart(dataset, metric.key, perfState.processedData[dataset].metrics[metric.key]);
-            });
-        });
-    });
 }
 
-function renderChart(dataset, metricKey, metricData) {
-    const canvas = document.getElementById(`chart-${dataset}-${metricKey}`);
-    if (!canvas || !metricData?.data?.length) return;
-    
-    // Show all 85 bars: 17 models × 5 methods, sorted by mean descending
-    const sorted = [...metricData.data].sort((a, b) => b.mean - a.mean);
-    
-    const chartKey = `${dataset}-${metricKey}`;
-    perfState.charts[chartKey] = new Chart(canvas, {
-        type: 'bar',
-        data: {
-            labels: sorted.map(d => `${d.modelName} + ${d.methodName}`),
-            datasets: [{
-                data: sorted.map(d => d.mean),
-                backgroundColor: sorted.map(d => PERF_CONFIG.methodColors[d.method]),
-                borderRadius: 3,
-                barThickness: 16,
-                maxBarThickness: 20
-            }]
-        },
-        options: {
-            indexAxis: 'y', // 水平条形图
-            responsive: true,
-            maintainAspectRatio: false,
-            animation: { duration: 150 },
-            layout: {
-                padding: { left: 10, right: 20, top: 10, bottom: 10 }
-            },
-            plugins: {
-                legend: { display: false },
-                tooltip: {
-                    callbacks: {
-                        title: ctx => {
-                            const item = sorted[ctx[0].dataIndex];
-                            return `${PERF_CONFIG.modelDisplayNames[item.model] || item.model} + ${PERF_CONFIG.methodNames[item.method]}`;
-                        },
-                        label: ctx => {
-                            const item = sorted[ctx.dataIndex];
-                            return [
-                                `Mean: ${formatNum(item.mean)}`,
-                                `CI: [${formatNum(item.ci_lower)}, ${formatNum(item.ci_upper)}]`
-                            ];
-                        }
-                    },
-                    backgroundColor: 'rgba(17,24,39,0.95)',
-                    padding: 12,
-                    cornerRadius: 6
-                }
-            },
-            scales: {
-                x: {
-                    beginAtZero: false,
-                    grid: { color: '#e5e7eb' },
-                    ticks: { 
-                        font: { size: 10 }, 
-                        callback: v => v.toFixed(2),
-                        padding: 5
-                    }
-                },
-                y: {
-                    grid: { display: false },
-                    ticks: { 
-                        font: { size: 11, weight: '500' },
-                        autoSkip: false,
-                        padding: 8
-                    }
-                }
-            }
-        }
-    });
-}
 
 // ==================== Event Handlers ====================
 function initFilters() {

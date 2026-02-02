@@ -1329,32 +1329,11 @@
     border-radius: 0.75rem;
     padding: 1rem 1.25rem;
     border: 1px solid var(--color-gray-100);
-    max-height: 700px;
+    max-height: 600px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    min-width: 400px;
-}
-
-.perf-metric-card .perf-chart-wrapper {
-    flex: 1;
-    overflow-y: auto;
-    min-height: 0;
-    scrollbar-width: thin;
-    scrollbar-color: var(--color-gray-300) transparent;
-}
-
-.perf-metric-card .perf-chart-wrapper::-webkit-scrollbar {
-    width: 6px;
-}
-
-.perf-metric-card .perf-chart-wrapper::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.perf-metric-card .perf-chart-wrapper::-webkit-scrollbar-thumb {
-    background: var(--color-gray-300);
-    border-radius: 3px;
+    min-width: 450px;
 }
 
 .perf-metric-header {
@@ -1362,6 +1341,8 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 0.75rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
 }
 
 .perf-metric-name {
@@ -1379,26 +1360,103 @@
     color: var(--color-primary);
 }
 
-/* Metric Chart Container - 85 horizontal bars need adequate height */
-.perf-chart-wrapper {
-    height: 1800px;
-    position: relative;
+/* Table Wrapper */
+.perf-table-wrapper {
+    flex: 1;
     overflow-y: auto;
-    overflow-x: hidden;
+    min-height: 0;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-gray-300) transparent;
+    background: white;
+    border-radius: 0.5rem;
 }
 
-/* Canvas inside wrapper should fill available space */
-.perf-chart-wrapper canvas {
-    width: 100% !important;
+.perf-table-wrapper::-webkit-scrollbar {
+    width: 6px;
 }
 
-/* Method color indicators */
-.perf-method-dot {
+.perf-table-wrapper::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.perf-table-wrapper::-webkit-scrollbar-thumb {
+    background: var(--color-gray-300);
+    border-radius: 3px;
+}
+
+/* Performance Table */
+.perf-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8125rem;
+}
+
+.perf-table th,
+.perf-table td {
+    padding: 0.5rem 0.625rem;
+    text-align: left;
+    border-bottom: 1px solid var(--color-gray-100);
+}
+
+.perf-table th {
+    background: var(--color-gray-50);
+    font-weight: 600;
+    color: var(--color-gray-600);
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.perf-table tbody tr:hover {
+    background: var(--color-gray-50);
+}
+
+.perf-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Table Cells */
+.perf-rank-cell {
+    font-weight: 600;
+    text-align: center !important;
+    width: 40px;
+}
+
+.perf-model-cell {
+    font-weight: 600;
+    color: var(--color-gray-800);
+}
+
+.perf-method-cell {
+    text-align: center !important;
+}
+
+.perf-method-badge {
     display: inline-block;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    margin-right: 0.375rem;
+    padding: 0.125rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.625rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.perf-score-cell {
+    font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+    font-weight: 600;
+    color: var(--color-gray-700);
+}
+
+.perf-score-top {
+    color: var(--color-primary);
+}
+
+.perf-ci-cell {
+    font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+    font-size: 0.6875rem;
+    color: var(--color-gray-500);
 }
 
 /* No data state */
