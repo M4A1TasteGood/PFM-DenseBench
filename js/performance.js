@@ -269,19 +269,23 @@ function renderChart(dataset, metricKey, metricData) {
     perfState.charts[chartKey] = new Chart(canvas, {
         type: 'bar',
         data: {
-            labels: sorted.map(d => `${d.modelName}+${d.methodName}`),
+            labels: sorted.map(d => `${d.modelName} + ${d.methodName}`),
             datasets: [{
                 data: sorted.map(d => d.mean),
                 backgroundColor: sorted.map(d => PERF_CONFIG.methodColors[d.method]),
-                borderRadius: 2,
-                barPercentage: 0.9,
-                categoryPercentage: 0.95
+                borderRadius: 3,
+                barThickness: 14,
+                maxBarThickness: 16
             }]
         },
         options: {
+            indexAxis: 'y', // 水平条形图
             responsive: true,
             maintainAspectRatio: false,
             animation: { duration: 150 },
+            layout: {
+                padding: { left: 5, right: 15 }
+            },
             plugins: {
                 legend: { display: false },
                 tooltip: {
@@ -305,15 +309,16 @@ function renderChart(dataset, metricKey, metricData) {
             },
             scales: {
                 x: {
-                    grid: { display: false },
-                    ticks: { 
-                        display: false // Hide x-axis labels due to 85 bars
-                    }
+                    beginAtZero: false,
+                    grid: { color: '#f0f0f0' },
+                    ticks: { font: { size: 9 }, callback: v => v.toFixed(2) }
                 },
                 y: {
-                    beginAtZero: false,
-                    grid: { color: '#f3f4f6' },
-                    ticks: { font: { size: 9 }, callback: v => v.toFixed(2) }
+                    grid: { display: false },
+                    ticks: { 
+                        font: { size: 9 },
+                        autoSkip: false
+                    }
                 }
             }
         }

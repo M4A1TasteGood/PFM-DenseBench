@@ -1298,10 +1298,11 @@
 
 .perf-metrics-grid.single-metric .perf-metric-card {
     max-width: 100%;
+    max-height: 1700px;
 }
 
 .perf-metrics-grid.single-metric .perf-chart-wrapper {
-    height: 400px;
+    height: 1600px;
 }
 
 @media (max-width: 1400px) {
@@ -1328,6 +1329,16 @@
     border-radius: 0.75rem;
     padding: 1rem;
     border: 1px solid var(--color-gray-100);
+    max-height: 600px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.perf-metric-card .perf-chart-wrapper {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
 }
 
 .perf-metric-header {
@@ -1352,11 +1363,12 @@
     color: var(--color-primary);
 }
 
-/* Metric Chart Container */
+/* Metric Chart Container - 85 horizontal bars need ~1500px height */
 .perf-chart-wrapper {
-    height: 250px;
+    height: 1500px;
     position: relative;
-    overflow: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 /* Method color indicators */
