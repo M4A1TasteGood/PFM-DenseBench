@@ -11,8 +11,8 @@ const PERF_CONFIG = {
         frozen: 'Frozen',
         lora: 'LoRA',
         dora: 'DoRA',
-        cnn: 'CNN Adapter',
-        transformer: 'Trans. Adapter'
+        cnn: 'CNN',
+        transformer: 'Trans.'
     },
     methodColors: {
         frozen: '#3b82f6',
@@ -31,194 +31,167 @@ const PERF_CONFIG = {
         { key: 'Mean_Recall', name: 'mRecall' },
         { key: 'Mean_F1', name: 'mF1' }
     ],
+    datasetOrder: [
+        // Nuclear
+        'CoNIC2022', 'PanNuke', 'cpm15', 'cpm17', 'kumar', 'CoNSeP', 'TNBC', 'NuCLS', 'Lizard',
+        // Gland
+        'GlaS', 'CRAG', 'RINGS',
+        // Tissue
+        'BCSS', 'CoCaHis', 'COSAS24', 'EBHI', 'WSSS4LUAD', 'Janowczyk'
+    ],
     datasetCategories: {
         Nuclear: ['CoNIC2022', 'CoNSeP', 'cpm15', 'cpm17', 'kumar', 'Lizard', 'NuCLS', 'PanNuke', 'TNBC'],
         Gland: ['GlaS', 'CRAG', 'RINGS'],
         Tissue: ['BCSS', 'CoCaHis', 'COSAS24', 'EBHI', 'WSSS4LUAD', 'Janowczyk']
     },
     datasetDisplayNames: {
-        'CoNIC2022': 'CoNIC2022',
-        'PanNuke': 'PanNuke',
-        'cpm15': 'CPM15',
-        'cpm17': 'CPM17',
-        'kumar': 'Kumar',
-        'CoNSeP': 'CoNSeP',
-        'TNBC': 'TNBC',
-        'NuCLS': 'NuCLS',
-        'Lizard': 'Lizard',
-        'GlaS': 'GlaS',
-        'CRAG': 'CRAG',
-        'RINGS': 'RINGS',
-        'BCSS': 'BCSS',
-        'CoCaHis': 'CoCaHis',
-        'COSAS24': 'COSAS24',
-        'EBHI': 'EBHI',
-        'WSSS4LUAD': 'WSSS4LUAD',
-        'Janowczyk': 'Janowczyk'
+        'CoNIC2022': 'CoNIC2022', 'PanNuke': 'PanNuke', 'cpm15': 'CPM15', 'cpm17': 'CPM17',
+        'kumar': 'Kumar', 'CoNSeP': 'CoNSeP', 'TNBC': 'TNBC', 'NuCLS': 'NuCLS', 'Lizard': 'Lizard',
+        'GlaS': 'GlaS', 'CRAG': 'CRAG', 'RINGS': 'RINGS', 'BCSS': 'BCSS', 'CoCaHis': 'CoCaHis',
+        'COSAS24': 'COSAS24', 'EBHI': 'EBHI', 'WSSS4LUAD': 'WSSS4LUAD', 'Janowczyk': 'Janowczyk'
     },
     modelDisplayNames: {
-        'PathOrchestra': 'PathOrchestra',
-        'conch_v1_5': 'CONCHv1.5',
-        'conch_v1': 'CONCH',
-        'gigapath': 'Prov-GigaPath',
-        'hibou_l': 'Hibou-L',
-        'hoptimus_0': 'H-Optimus-0',
-        'hoptimus_1': 'H-Optimus-1',
-        'kaiko-vitl14': 'Kaiko-L',
-        'lunit_vits8': 'Lunit',
-        'midnight12k': 'Midnight-12k',
-        'musk': 'MUSK',
-        'phikon': 'Phikon',
-        'phikon_v2': 'Phikon-v2',
-        'uni_v1': 'UNI',
-        'uni_v2': 'UNI2-h',
-        'virchow_v1': 'Virchow',
-        'virchow_v2': 'Virchow2'
+        'PathOrchestra': 'PathOrch.', 'conch_v1_5': 'CONCHv1.5', 'conch_v1': 'CONCH',
+        'gigapath': 'GigaPath', 'hibou_l': 'Hibou-L', 'hoptimus_0': 'H-Opt-0', 'hoptimus_1': 'H-Opt-1',
+        'kaiko-vitl14': 'Kaiko-L', 'lunit_vits8': 'Lunit', 'midnight12k': 'Midnight',
+        'musk': 'MUSK', 'phikon': 'Phikon', 'phikon_v2': 'Phikon-v2',
+        'uni_v1': 'UNI', 'uni_v2': 'UNI2-h', 'virchow_v1': 'Virchow', 'virchow_v2': 'Virchow2'
     }
 };
 
 // ==================== Global State ====================
-let perfData = {
-    rawData: {},
-    processedData: {},
+let perfState = {
+    rawData: null,
+    processedData: null,
     charts: {},
-    currentFilters: {
-        search: '',
-        category: 'all',
-        metric: 'all'
-    }
+    currentDataset: 'all',
+    currentMetric: 'all',
+    isLoaded: false
 };
 
 // ==================== Utility Functions ====================
-
 function getDatasetCategory(dataset) {
-    for (const [category, datasets] of Object.entries(PERF_CONFIG.datasetCategories)) {
-        if (datasets.includes(dataset)) {
-            return category;
-        }
+    for (const [cat, datasets] of Object.entries(PERF_CONFIG.datasetCategories)) {
+        if (datasets.includes(dataset)) return cat;
     }
     return 'Other';
 }
 
-function getModelDisplayName(modelKey) {
-    return PERF_CONFIG.modelDisplayNames[modelKey] || modelKey;
-}
-
-function getDatasetDisplayName(datasetKey) {
-    return PERF_CONFIG.datasetDisplayNames[datasetKey] || datasetKey;
-}
-
-function formatNumber(num, decimals = 4) {
-    if (num === null || num === undefined) return '-';
-    return num.toFixed(decimals);
+function formatNum(num, dec = 4) {
+    return num != null ? num.toFixed(dec) : '-';
 }
 
 // ==================== Data Loading ====================
-
-async function loadMethodData(method) {
+async function loadAllData() {
     try {
-        const response = await fetch(`${PERF_CONFIG.dataPath}${method}.json`);
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        return await response.json();
-    } catch (error) {
-        console.error(`Error loading ${method} data:`, error);
+        const promises = PERF_CONFIG.methods.map(async m => {
+            const res = await fetch(`${PERF_CONFIG.dataPath}${m}.json`);
+            return [m, res.ok ? await res.json() : null];
+        });
+        const results = await Promise.all(promises);
+        const data = {};
+        results.forEach(([m, d]) => { if (d) data[m] = d; });
+        return data;
+    } catch (e) {
+        console.error('Error loading data:', e);
         return null;
     }
 }
 
-async function loadAllPerformanceData() {
-    const promises = PERF_CONFIG.methods.map(async method => {
-        const data = await loadMethodData(method);
-        return [method, data];
-    });
-    
-    const results = await Promise.all(promises);
-    const rawData = {};
-    for (const [method, data] of results) {
-        if (data) rawData[method] = data;
-    }
-    return rawData;
-}
-
 // ==================== Data Processing ====================
-
-function processPerformanceData(rawData) {
+function processData(rawData) {
     const processed = {};
     
     // Get all datasets
     const allDatasets = new Set();
-    for (const methodData of Object.values(rawData)) {
-        for (const dataset of Object.keys(methodData)) {
-            allDatasets.add(dataset);
-        }
-    }
+    Object.values(rawData).forEach(md => Object.keys(md).forEach(d => allDatasets.add(d)));
     
-    // Process each dataset
-    for (const dataset of allDatasets) {
+    allDatasets.forEach(dataset => {
         processed[dataset] = {
-            name: getDatasetDisplayName(dataset),
+            name: PERF_CONFIG.datasetDisplayNames[dataset] || dataset,
             category: getDatasetCategory(dataset),
             metrics: {}
         };
         
-        // Process each metric
-        for (const metric of PERF_CONFIG.metrics) {
-            const metricData = [];
+        PERF_CONFIG.metrics.forEach(metric => {
+            const items = [];
             
-            // Collect data from all methods and models
-            for (const [method, methodData] of Object.entries(rawData)) {
-                if (!methodData[dataset]) continue;
+            Object.entries(rawData).forEach(([method, methodData]) => {
+                if (!methodData[dataset]) return;
                 
-                for (const [modelKey, modelMetrics] of Object.entries(methodData[dataset])) {
-                    if (modelMetrics[metric.key]) {
-                        metricData.push({
-                            model: modelKey,
-                            modelDisplay: getModelDisplayName(modelKey),
-                            method: method,
-                            methodDisplay: PERF_CONFIG.methodNames[method],
-                            mean: modelMetrics[metric.key].mean,
-                            ci_lower: modelMetrics[metric.key].ci_lower,
-                            ci_upper: modelMetrics[metric.key].ci_upper,
-                            std: (modelMetrics[metric.key].ci_upper - modelMetrics[metric.key].ci_lower) / (2 * 1.96)
+                Object.entries(methodData[dataset]).forEach(([model, metrics]) => {
+                    if (metrics[metric.key]) {
+                        const m = metrics[metric.key];
+                        items.push({
+                            model,
+                            modelName: PERF_CONFIG.modelDisplayNames[model] || model,
+                            method,
+                            methodName: PERF_CONFIG.methodNames[method],
+                            mean: m.mean,
+                            ci_lower: m.ci_lower,
+                            ci_upper: m.ci_upper
                         });
                     }
-                }
-            }
+                });
+            });
             
-            // Sort by mean descending
-            metricData.sort((a, b) => b.mean - a.mean);
-            
+            items.sort((a, b) => b.mean - a.mean);
             processed[dataset].metrics[metric.key] = {
                 name: metric.name,
-                data: metricData,
-                best: metricData.length > 0 ? metricData[0] : null
+                data: items,
+                best: items[0] || null
             };
-        }
-    }
+        });
+    });
     
     return processed;
 }
 
 // ==================== Rendering ====================
+function populateDatasetDropdown() {
+    const select = document.getElementById('perf-dataset-filter');
+    if (!select || !perfState.processedData) return;
+    
+    let html = '<option value="all">All Datasets (18)</option>';
+    html += '<optgroup label="Nuclear Segmentation">';
+    PERF_CONFIG.datasetOrder.filter(d => PERF_CONFIG.datasetCategories.Nuclear.includes(d)).forEach(d => {
+        if (perfState.processedData[d]) {
+            html += `<option value="${d}">${perfState.processedData[d].name}</option>`;
+        }
+    });
+    html += '</optgroup><optgroup label="Gland Segmentation">';
+    PERF_CONFIG.datasetOrder.filter(d => PERF_CONFIG.datasetCategories.Gland.includes(d)).forEach(d => {
+        if (perfState.processedData[d]) {
+            html += `<option value="${d}">${perfState.processedData[d].name}</option>`;
+        }
+    });
+    html += '</optgroup><optgroup label="Tissue Segmentation">';
+    PERF_CONFIG.datasetOrder.filter(d => PERF_CONFIG.datasetCategories.Tissue.includes(d)).forEach(d => {
+        if (perfState.processedData[d]) {
+            html += `<option value="${d}">${perfState.processedData[d].name}</option>`;
+        }
+    });
+    html += '</optgroup>';
+    
+    select.innerHTML = html;
+}
 
-function renderDatasetCard(dataset, datasetData) {
-    const categoryClass = datasetData.category.toLowerCase();
+function renderDatasetCard(datasetKey, datasetData, metricFilter) {
+    const catClass = datasetData.category.toLowerCase();
+    const metricsToShow = metricFilter === 'all' 
+        ? PERF_CONFIG.metrics 
+        : PERF_CONFIG.metrics.filter(m => m.key === metricFilter);
     
     return `
-        <div class="perf-dataset-card" data-dataset="${dataset}" data-category="${datasetData.category}">
+        <div class="perf-dataset-card" data-dataset="${datasetKey}">
             <div class="perf-dataset-header">
                 <div class="perf-dataset-title">
                     <h3>${datasetData.name}</h3>
-                    <span class="perf-dataset-badge perf-dataset-badge-${categoryClass}">${datasetData.category}</span>
-                </div>
-                <div class="perf-dataset-info">
-                    17 models • 5 methods • 8 metrics
+                    <span class="perf-dataset-badge perf-dataset-badge-${catClass}">${datasetData.category}</span>
                 </div>
             </div>
-            <div class="perf-metrics-grid">
-                ${PERF_CONFIG.metrics.map(metric => 
-                    renderMetricCard(dataset, metric, datasetData.metrics[metric.key])
-                ).join('')}
+            <div class="perf-metrics-grid ${metricsToShow.length === 1 ? 'single-metric' : ''}">
+                ${metricsToShow.map(metric => renderMetricCard(datasetKey, metric, datasetData.metrics[metric.key])).join('')}
             </div>
         </div>
     `;
@@ -226,15 +199,13 @@ function renderDatasetCard(dataset, datasetData) {
 
 function renderMetricCard(dataset, metric, metricData) {
     const best = metricData?.best;
-    const bestInfo = best 
-        ? `Best: <strong>${formatNumber(best.mean)}</strong> (${best.modelDisplay})`
-        : 'No data';
+    const bestText = best ? `<strong>${formatNum(best.mean)}</strong> (${best.modelName} + ${best.methodName})` : 'No data';
     
     return `
         <div class="perf-metric-card" data-metric="${metric.key}">
             <div class="perf-metric-header">
                 <span class="perf-metric-name">${metric.name}</span>
-                <span class="perf-metric-best">${bestInfo}</span>
+                <span class="perf-metric-best">Best: ${bestText}</span>
             </div>
             <div class="perf-chart-wrapper">
                 <canvas id="chart-${dataset}-${metric.key}"></canvas>
@@ -243,68 +214,49 @@ function renderMetricCard(dataset, metric, metricData) {
     `;
 }
 
-function renderAllDatasetCards(processedData, filters) {
+function renderView() {
     const container = document.getElementById('perf-datasets-container');
-    if (!container) return;
+    if (!container || !perfState.processedData) return;
     
-    // Filter datasets
-    let datasets = Object.entries(processedData);
+    // Destroy all existing charts
+    Object.values(perfState.charts).forEach(c => c.destroy());
+    perfState.charts = {};
     
-    // Apply category filter
-    if (filters.category !== 'all') {
-        datasets = datasets.filter(([_, data]) => data.category === filters.category);
-    }
+    const { currentDataset, currentMetric } = perfState;
     
-    // Apply search filter
-    if (filters.search) {
-        const searchLower = filters.search.toLowerCase();
-        datasets = datasets.filter(([key, data]) => 
-            data.name.toLowerCase().includes(searchLower) ||
-            key.toLowerCase().includes(searchLower)
-        );
-    }
+    // Get datasets to show
+    let datasetsToShow = currentDataset === 'all' 
+        ? PERF_CONFIG.datasetOrder.filter(d => perfState.processedData[d])
+        : [currentDataset];
     
-    // Sort by category then name
-    datasets.sort((a, b) => {
-        const catOrder = { Nuclear: 0, Gland: 1, Tissue: 2 };
-        const catDiff = (catOrder[a[1].category] || 99) - (catOrder[b[1].category] || 99);
-        if (catDiff !== 0) return catDiff;
-        return a[1].name.localeCompare(b[1].name);
-    });
-    
-    if (datasets.length === 0) {
-        container.innerHTML = '<div class="perf-no-data">No datasets found matching your filters.</div>';
+    if (datasetsToShow.length === 0) {
+        container.innerHTML = '<div class="perf-no-data">No data available.</div>';
         return;
     }
     
-    container.innerHTML = datasets.map(([key, data]) => renderDatasetCard(key, data)).join('');
+    container.innerHTML = datasetsToShow.map(d => 
+        renderDatasetCard(d, perfState.processedData[d], currentMetric)
+    ).join('');
     
-    // Render charts after DOM is ready
-    setTimeout(() => {
-        datasets.forEach(([dataset, data]) => {
-            PERF_CONFIG.metrics.forEach(metric => {
-                if (filters.metric === 'all' || filters.metric === metric.key) {
-                    renderMetricChart(dataset, metric.key, data.metrics[metric.key]);
-                }
+    // Render charts after DOM update
+    requestAnimationFrame(() => {
+        datasetsToShow.forEach(dataset => {
+            const metricsToRender = currentMetric === 'all'
+                ? PERF_CONFIG.metrics
+                : PERF_CONFIG.metrics.filter(m => m.key === currentMetric);
+            
+            metricsToRender.forEach(metric => {
+                renderChart(dataset, metric.key, perfState.processedData[dataset].metrics[metric.key]);
             });
         });
-    }, 50);
+    });
 }
 
-// ==================== Chart Rendering ====================
-
-function renderMetricChart(dataset, metricKey, metricData) {
-    const canvasId = `chart-${dataset}-${metricKey}`;
-    const canvas = document.getElementById(canvasId);
-    if (!canvas || !metricData?.data || metricData.data.length === 0) return;
+function renderChart(dataset, metricKey, metricData) {
+    const canvas = document.getElementById(`chart-${dataset}-${metricKey}`);
+    if (!canvas || !metricData?.data?.length) return;
     
-    // Destroy existing chart
-    const chartKey = `${dataset}-${metricKey}`;
-    if (perfData.charts[chartKey]) {
-        perfData.charts[chartKey].destroy();
-    }
-    
-    // Prepare data - group by model, show best method for each
+    // Group by model, take best method for each
     const modelBest = {};
     metricData.data.forEach(item => {
         if (!modelBest[item.model] || item.mean > modelBest[item.model].mean) {
@@ -312,163 +264,107 @@ function renderMetricChart(dataset, metricKey, metricData) {
         }
     });
     
-    // Sort by mean descending and take top entries
-    const sortedModels = Object.values(modelBest)
-        .sort((a, b) => b.mean - a.mean);
+    const sorted = Object.values(modelBest).sort((a, b) => b.mean - a.mean);
     
-    const labels = sortedModels.map(d => d.modelDisplay);
-    const data = sortedModels.map(d => d.mean);
-    const colors = sortedModels.map(d => PERF_CONFIG.methodColors[d.method]);
-    const errorBars = sortedModels.map(d => ({
-        lower: d.ci_lower,
-        upper: d.ci_upper
-    }));
-    
-    // Store full data for tooltip
-    const fullData = sortedModels;
-    
-    perfData.charts[chartKey] = new Chart(canvas, {
+    const chartKey = `${dataset}-${metricKey}`;
+    perfState.charts[chartKey] = new Chart(canvas, {
         type: 'bar',
         data: {
-            labels: labels,
+            labels: sorted.map(d => d.modelName),
             datasets: [{
-                data: data,
-                backgroundColor: colors,
-                borderRadius: 2,
-                barPercentage: 0.8,
-                categoryPercentage: 0.9
+                data: sorted.map(d => d.mean),
+                backgroundColor: sorted.map(d => PERF_CONFIG.methodColors[d.method]),
+                borderRadius: 3,
+                barPercentage: 0.85
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            indexAxis: 'x',
+            animation: { duration: 200 },
             plugins: {
                 legend: { display: false },
                 tooltip: {
-                    enabled: true,
                     callbacks: {
-                        title: (context) => {
-                            const idx = context[0].dataIndex;
-                            const item = fullData[idx];
-                            return `${item.modelDisplay} + ${item.methodDisplay}`;
+                        title: ctx => {
+                            const i = ctx[0].dataIndex;
+                            const item = sorted[i];
+                            return `${PERF_CONFIG.modelDisplayNames[item.model] || item.model} + ${PERF_CONFIG.methodNames[item.method]}`;
                         },
-                        label: (context) => {
-                            const idx = context.dataIndex;
-                            const item = fullData[idx];
+                        label: ctx => {
+                            const item = sorted[ctx.dataIndex];
                             return [
-                                `Mean: ${formatNumber(item.mean)}`,
-                                `Std: ${formatNumber(item.std)}`,
-                                `CI: [${formatNumber(item.ci_lower)}, ${formatNumber(item.ci_upper)}]`
+                                `Mean: ${formatNum(item.mean)}`,
+                                `CI: [${formatNum(item.ci_lower)}, ${formatNum(item.ci_upper)}]`
                             ];
                         }
                     },
-                    backgroundColor: 'rgba(17, 24, 39, 0.95)',
-                    titleColor: '#fff',
-                    bodyColor: '#fff',
-                    padding: 12,
-                    cornerRadius: 8,
-                    displayColors: true,
-                    boxWidth: 8,
-                    boxHeight: 8,
-                    boxPadding: 4
+                    backgroundColor: 'rgba(17,24,39,0.95)',
+                    padding: 10,
+                    cornerRadius: 6
                 }
             },
             scales: {
                 x: {
-                    display: true,
                     grid: { display: false },
-                    ticks: {
-                        maxRotation: 45,
-                        minRotation: 45,
-                        font: { size: 9 },
-                        autoSkip: false
-                    }
+                    ticks: { font: { size: 9 }, maxRotation: 45, minRotation: 45 }
                 },
                 y: {
-                    display: true,
                     beginAtZero: false,
                     grid: { color: '#f3f4f6' },
-                    ticks: {
-                        font: { size: 10 },
-                        callback: (value) => value.toFixed(2)
-                    }
+                    ticks: { font: { size: 9 }, callback: v => v.toFixed(2) }
                 }
-            },
-            animation: {
-                duration: 300
             }
         }
     });
 }
 
 // ==================== Event Handlers ====================
-
-function initPerformanceFilters() {
-    // Search input
-    const searchInput = document.getElementById('perf-search');
-    if (searchInput) {
-        searchInput.addEventListener('input', (e) => {
-            perfData.currentFilters.search = e.target.value;
-            renderAllDatasetCards(perfData.processedData, perfData.currentFilters);
+function initFilters() {
+    const datasetSelect = document.getElementById('perf-dataset-filter');
+    const metricSelect = document.getElementById('perf-metric-filter');
+    
+    if (datasetSelect) {
+        datasetSelect.addEventListener('change', e => {
+            perfState.currentDataset = e.target.value;
+            renderView();
         });
     }
     
-    // Category filter
-    const categoryFilter = document.getElementById('perf-category-filter');
-    if (categoryFilter) {
-        categoryFilter.addEventListener('change', (e) => {
-            perfData.currentFilters.category = e.target.value;
-            renderAllDatasetCards(perfData.processedData, perfData.currentFilters);
+    if (metricSelect) {
+        metricSelect.addEventListener('change', e => {
+            perfState.currentMetric = e.target.value;
+            renderView();
         });
     }
-    
-    // Metric filter
-    const metricFilter = document.getElementById('perf-metric-filter');
-    if (metricFilter) {
-        metricFilter.addEventListener('change', (e) => {
-            perfData.currentFilters.metric = e.target.value;
-            applyMetricFilter(e.target.value);
-        });
-    }
-}
-
-function applyMetricFilter(metricKey) {
-    const metricCards = document.querySelectorAll('.perf-metric-card');
-    metricCards.forEach(card => {
-        if (metricKey === 'all' || card.dataset.metric === metricKey) {
-            card.style.display = '';
-        } else {
-            card.style.display = 'none';
-        }
-    });
 }
 
 // ==================== Initialization ====================
-
 async function initPerformanceTab() {
     const container = document.getElementById('perf-datasets-container');
     if (!container) return;
     
-    container.innerHTML = '<div class="loading-cell">Loading performance data...</div>';
-    
-    // Load data
-    const rawData = await loadAllPerformanceData();
-    if (!rawData || Object.keys(rawData).length === 0) {
-        container.innerHTML = '<div class="perf-no-data">Failed to load performance data.</div>';
+    // Don't reload if already loaded
+    if (perfState.isLoaded && perfState.processedData) {
+        renderView();
         return;
     }
     
-    // Process data
-    perfData.rawData = rawData;
-    perfData.processedData = processPerformanceData(rawData);
+    container.innerHTML = '<div class="loading-cell">Loading...</div>';
     
-    // Render
-    renderAllDatasetCards(perfData.processedData, perfData.currentFilters);
+    const rawData = await loadAllData();
+    if (!rawData || Object.keys(rawData).length === 0) {
+        container.innerHTML = '<div class="perf-no-data">Failed to load data. Please refresh.</div>';
+        return;
+    }
     
-    // Initialize filters
-    initPerformanceFilters();
+    perfState.rawData = rawData;
+    perfState.processedData = processData(rawData);
+    perfState.isLoaded = true;
+    
+    populateDatasetDropdown();
+    initFilters();
+    renderView();
 }
 
-// Export for use in main leaderboard.js
 window.initPerformanceTab = initPerformanceTab;
