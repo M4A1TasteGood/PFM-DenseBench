@@ -1184,3 +1184,318 @@
     transform: translateY(0);
     transition: opacity 0.3s ease-out, transform 0.3s ease-out;
 }
+
+/* ========================================
+   Performance Tab Styles
+   ======================================== */
+
+/* Performance Header */
+.perf-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.perf-header-left .lb-section-title {
+    margin-bottom: 0.25rem;
+}
+
+.perf-subtitle {
+    color: var(--color-gray-500);
+    font-size: 0.9375rem;
+}
+
+.perf-header-right {
+    color: var(--color-gray-500);
+    font-size: 0.875rem;
+    padding-top: 0.5rem;
+}
+
+/* Method Legend */
+.perf-legend {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+    padding: 0.75rem 1rem;
+    background: white;
+    border-radius: 0.75rem;
+    border: 1px solid var(--color-gray-200);
+}
+
+.perf-legend-title {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-gray-600);
+}
+
+.perf-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.8125rem;
+    color: var(--color-gray-600);
+}
+
+/* Performance Controls */
+.perf-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+    padding: 1rem 1.5rem;
+    background: white;
+    border-radius: 1rem;
+    border: 1px solid var(--color-gray-200);
+}
+
+.perf-search-box {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 1rem;
+    background: var(--color-gray-50);
+    border: 1px solid var(--color-gray-200);
+    border-radius: 0.5rem;
+    min-width: 250px;
+    flex: 1;
+    max-width: 350px;
+}
+
+.perf-search-box svg {
+    color: var(--color-gray-400);
+    flex-shrink: 0;
+}
+
+.perf-search-box input {
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 0.9375rem;
+    color: var(--color-gray-800);
+    width: 100%;
+}
+
+.perf-search-box input::placeholder {
+    color: var(--color-gray-400);
+}
+
+.perf-filter-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.perf-filter-group label {
+    font-size: 0.875rem;
+    color: var(--color-gray-600);
+    font-weight: 500;
+}
+
+.perf-select {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--color-gray-200);
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--color-gray-700);
+    background: white;
+    cursor: pointer;
+    min-width: 150px;
+}
+
+.perf-select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+
+/* Dataset Cards Container */
+.perf-datasets-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+/* Dataset Card */
+.perf-dataset-card {
+    background: white;
+    border-radius: 1rem;
+    border: 1px solid var(--color-gray-200);
+    overflow: hidden;
+}
+
+.perf-dataset-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 1.5rem;
+    background: var(--color-gray-50);
+    border-bottom: 1px solid var(--color-gray-200);
+}
+
+.perf-dataset-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.perf-dataset-title h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-gray-900);
+    margin: 0;
+}
+
+.perf-dataset-badge {
+    display: inline-block;
+    padding: 0.25rem 0.625rem;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.perf-dataset-badge-nuclear {
+    background: #eef2ff;
+    color: #4f46e5;
+}
+
+.perf-dataset-badge-gland {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+.perf-dataset-badge-tissue {
+    background: #d1fae5;
+    color: #059669;
+}
+
+.perf-dataset-info {
+    font-size: 0.8125rem;
+    color: var(--color-gray-500);
+}
+
+/* Metric Cards Grid */
+.perf-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    padding: 1.5rem;
+}
+
+@media (max-width: 1400px) {
+    .perf-metrics-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 1024px) {
+    .perf-metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .perf-metrics-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Metric Card */
+.perf-metric-card {
+    background: var(--color-gray-50);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    border: 1px solid var(--color-gray-100);
+}
+
+.perf-metric-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.perf-metric-name {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--color-gray-800);
+}
+
+.perf-metric-best {
+    font-size: 0.75rem;
+    color: var(--color-gray-500);
+}
+
+.perf-metric-best strong {
+    color: var(--color-primary);
+}
+
+/* Metric Chart Container */
+.perf-chart-wrapper {
+    height: 220px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Tooltip Styles */
+.perf-tooltip {
+    position: absolute;
+    background: rgba(17, 24, 39, 0.95);
+    color: white;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.8125rem;
+    pointer-events: none;
+    z-index: 1000;
+    min-width: 180px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+
+.perf-tooltip.visible {
+    opacity: 1;
+}
+
+.perf-tooltip-title {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.perf-tooltip-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.25rem;
+}
+
+.perf-tooltip-label {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.perf-tooltip-value {
+    font-weight: 500;
+    font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+}
+
+/* Method color indicators */
+.perf-method-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 0.375rem;
+}
+
+/* No data state */
+.perf-no-data {
+    text-align: center;
+    padding: 2rem;
+    color: var(--color-gray-400);
+    font-size: 0.9375rem;
+}

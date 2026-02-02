@@ -300,59 +300,66 @@
 
             <!-- ========== Performance Tab ========== -->
             <section id="tab-performance" class="lb-content" style="display: none;">
-                <h2 class="lb-section-title">
-                    <span class="lb-section-icon">⚙️</span>
-                    Performance by Adaptation Method
-                </h2>
-                
-                <div class="lb-method-filter">
-                    <button class="lb-method-btn active" data-method="all">All Methods</button>
-                    <button class="lb-method-btn" data-method="frozen">Frozen</button>
-                    <button class="lb-method-btn" data-method="lora">LoRA</button>
-                    <button class="lb-method-btn" data-method="dora">DoRA</button>
-                    <button class="lb-method-btn" data-method="cnn">CNN Adapter</button>
-                    <button class="lb-method-btn" data-method="transformer">Trans. Adapter</button>
-                </div>
-                
-                <!-- Method Comparison Overview -->
-                <div class="lb-method-overview">
-                    <div class="lb-method-cards" id="method-cards">
-                        <!-- Will be populated by JavaScript -->
+                <!-- Performance Header -->
+                <div class="perf-header">
+                    <div class="perf-header-left">
+                        <h2 class="lb-section-title">
+                            <span class="lb-section-icon">📊</span>
+                            Detailed Performance
+                        </h2>
+                        <p class="perf-subtitle">Comprehensive performance analysis across all datasets and metrics</p>
+                    </div>
+                    <div class="perf-header-right">
+                        <span id="perf-stats">17 models • 18 datasets</span>
                     </div>
                 </div>
                 
-                <!-- Method Performance Chart -->
-                <div class="lb-chart-card lb-chart-wide">
-                    <h3>📊 Method Performance Comparison</h3>
-                    <p class="lb-chart-subtitle">Average mDice score across all models and datasets</p>
-                    <div class="lb-chart-container-wide">
-                        <canvas id="chart-method-comparison"></canvas>
+                <!-- Method Legend -->
+                <div class="perf-legend">
+                    <span class="perf-legend-title">Methods:</span>
+                    <span class="perf-legend-item"><span class="perf-method-dot" style="background: #3b82f6;"></span>Frozen</span>
+                    <span class="perf-legend-item"><span class="perf-method-dot" style="background: #22c55e;"></span>LoRA</span>
+                    <span class="perf-legend-item"><span class="perf-method-dot" style="background: #a855f7;"></span>DoRA</span>
+                    <span class="perf-legend-item"><span class="perf-method-dot" style="background: #f97316;"></span>CNN Adapter</span>
+                    <span class="perf-legend-item"><span class="perf-method-dot" style="background: #ec4899;"></span>Trans. Adapter</span>
+                </div>
+                
+                <!-- Search and Filter -->
+                <div class="perf-controls">
+                    <div class="perf-search-box">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                        </svg>
+                        <input type="text" id="perf-search" placeholder="Search datasets...">
+                    </div>
+                    <div class="perf-filter-group">
+                        <label>Category:</label>
+                        <select id="perf-category-filter" class="perf-select">
+                            <option value="all">All Categories</option>
+                            <option value="Nuclear">Nuclear Segmentation</option>
+                            <option value="Gland">Gland Segmentation</option>
+                            <option value="Tissue">Tissue Segmentation</option>
+                        </select>
+                    </div>
+                    <div class="perf-filter-group">
+                        <label>Metric:</label>
+                        <select id="perf-metric-filter" class="perf-select">
+                            <option value="all">All Metrics</option>
+                            <option value="Mean_Dice">mDice</option>
+                            <option value="mIoU">mIoU</option>
+                            <option value="Pixel_Accuracy">Pixel Acc</option>
+                            <option value="Mean_Accuracy">mAcc</option>
+                            <option value="Frequency_Weighted_IoU">FW IoU</option>
+                            <option value="Mean_Precision">mPrecision</option>
+                            <option value="Mean_Recall">mRecall</option>
+                            <option value="Mean_F1">mF1</option>
+                        </select>
                     </div>
                 </div>
                 
-                <!-- Detailed Method Table -->
-                <div class="lb-method-detail-section" id="method-detail-section">
-                    <h3 id="method-detail-title">Model Performance (All Methods)</h3>
-                    <div class="lb-table-wrapper">
-                        <table class="lb-table" id="method-table">
-                            <thead>
-                                <tr>
-                                    <th>Model</th>
-                                    <th>Frozen</th>
-                                    <th>LoRA</th>
-                                    <th>DoRA</th>
-                                    <th>CNN Adapter</th>
-                                    <th>Trans. Adapter</th>
-                                    <th>Best Method</th>
-                                </tr>
-                            </thead>
-                            <tbody id="method-tbody">
-                                <tr>
-                                    <td colspan="7" class="loading-cell">Loading data...</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                <!-- Dataset Cards Container -->
+                <div class="perf-datasets-container" id="perf-datasets-container">
+                    <div class="loading-cell">Loading performance data...</div>
                 </div>
             </section>
 
@@ -445,6 +452,7 @@
     </footer>
 
     <!-- JavaScript -->
+    <script src="js/performance.js"></script>
     <script src="js/leaderboard.js"></script>
 </body>
 </html>

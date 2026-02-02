@@ -1154,10 +1154,10 @@ async function init() {
     renderTaskCards(stats.dataset_sota);
     renderTasksTable(stats.dataset_sota);
     
-    // Render Performance tab
-    renderMethodCards(stats.method_comparison);
-    renderMethodComparisonChart(stats.method_comparison);
-    renderMethodTable(stats.model_ranks, globalData.detailedStats);
+    // Render Performance tab (handled by performance.js module)
+    if (typeof initPerformanceTab === 'function') {
+        initPerformanceTab();
+    }
     
     // Render Models tab
     populateModelSelector(stats.model_ranks);
@@ -1174,7 +1174,6 @@ async function init() {
     // Initialize event handlers
     initSearch();
     initTaskFilter();
-    initMethodFilter();
     initModelSelector();
 }
 
