@@ -67,8 +67,10 @@ const CONFIG = {
 // ==================== Global State ====================
 let globalData = {
     stats: null,
-    rawData: {},
-    charts: {}
+    rawData: null,  // Lazy loaded
+    rawDataLoaded: false,
+    charts: {},
+    detailedStats: null
 };
 
 // ==================== Utility Functions ====================
@@ -117,9 +119,12 @@ function getCategoryBadge(category) {
  */
 async function loadStats() {
     try {
+        console.log('Loading stats from:', CONFIG.statsPath);
         const response = await fetch(CONFIG.statsPath);
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        return await response.json();
+        const data = await response.json();
+        console.log('Stats loaded successfully:', Object.keys(data));
+        return data;
     } catch (error) {
         console.error('Error loading stats:', error);
         return null;
@@ -311,7 +316,7 @@ function initTabs() {
     const contents = document.querySelectorAll('.lb-content');
     
     tabs.forEach(tab => {
-        tab.addEventListener('click', () => {
+        tab.addEventListener('click', async () => {
             const tabId = tab.dataset.tab;
             
             // Update active tab
@@ -323,20 +328,23 @@ function initTabs() {
                 content.style.display = content.id === `tab-${tabId}` ? 'block' : 'none';
             });
             
-            // Initialize Performance tab when clicked
-            if (tabId === 'performance' && typeof initPerformanceTab === 'function') {
-                initPerformanceTab();
-            }
-            
-            // Initialize clickable tables when Models tab is shown
-            if (tabId === 'models') {
-                initClickableTables();
+            // Initialize tabs on demand
+            switch (tabId) {
+                case 'performance':
+                    if (typeof initPerformanceTab === 'function') {
+                        initPerformanceTab();
+                    }
+                    break;
+                case 'models':
+                    initClickableTables();
+                    initModelsTab();
+                    break;
             }
             
             // Trigger chart resize if needed
             setTimeout(() => {
                 window.dispatchEvent(new Event('resize'));
-            }, 100);
+            }, 50);
         });
     });
 }
@@ -665,7 +673,8 @@ function renderLeaderboardTable(modelRanks, detailedStats, datasetSota) {
     
     // Build table data
     tableData = modelRanks.map((model, idx) => {
-        const datasetRanks = detailedStats.modelDatasetRanks[model.model_key]?.datasets || {};
+        // Handle case when detailedStats is not yet loaded
+        const datasetRanks = detailedStats?.modelDatasetRanks?.[model.model_key]?.datasets || {};
         
         const row = {
             rank: model.position,
@@ -1131,61 +1140,125 @@ function initModelSelector() {
 // ==================== Initialization ====================
 
 /**
- * Main initialization function
+ * Show loading indicator
+ */
+function showLoading(container, message = 'Loading...') {
+    if (typeof container === 'string') {
+        container = document.querySelector(container);
+    }
+    if (container) {
+        container.innerHTML = `<div class="lb-loading"><div class="lb-spinner"></div><p>${message}</p></div>`;
+    }
+}
+
+/**
+ * Load raw data lazily (only when needed)
+ */
+async function ensureRawDataLoaded() {
+    if (globalData.rawDataLoaded) return globalData.rawData;
+    
+    console.log('Loading raw data...');
+    const rawData = await loadAllData();
+    globalData.rawData = rawData;
+    globalData.rawDataLoaded = true;
+    
+    // Compute detailed stats if we have stats
+    if (globalData.stats) {
+        globalData.detailedStats = computeDetailedStats(rawData, globalData.stats);
+    }
+    
+    return rawData;
+}
+
+/**
+ * Main initialization function - optimized for fast loading
  */
 async function init() {
-    // Load data
-    const [stats, rawData] = await Promise.all([
-        loadStats(),
-        loadAllData()
-    ]);
+    console.time('Page Init');
+    console.log('Starting initialization...');
     
-    if (!stats) {
-        console.error('Failed to load statistics');
-        return;
+    try {
+        // Only load stats.json first (small file, fast)
+        const stats = await loadStats();
+        
+        if (!stats) {
+            console.error('Failed to load statistics');
+            const container = document.querySelector('.container');
+            if (container) {
+                container.insertAdjacentHTML('afterbegin', 
+                    '<div class="lb-error">Failed to load data. Please refresh the page.</div>');
+            }
+            return;
+        }
+        
+        // Store globally
+        globalData.stats = stats;
+        console.log('Stats loaded, model_ranks:', stats.model_ranks?.length, 'dataset_sota:', Object.keys(stats.dataset_sota || {}).length);
+        
+        // Initialize tabs first (instant)
+        initTabs();
+        
+        // Render Leaderboard tab immediately with stats only
+        console.log('Rendering charts and table...');
+        renderDatasetSotaChart(stats.dataset_sota);
+        renderModelRanksChart(stats.model_ranks);
+        renderLeaderboardTable(stats.model_ranks, null, stats.dataset_sota);
+        
+        // Initialize other components
+        initSearch();
+        initTaskFilter();
+        initClickableTables();
+        
+        // Populate model selector
+        populateModelSelector(stats.model_ranks);
+        
+        console.timeEnd('Page Init');
+        console.log('Initialization complete!');
+        
+        // Load raw data in background for features that need it
+        setTimeout(async () => {
+            try {
+                await ensureRawDataLoaded();
+                console.log('Background data loaded');
+            } catch (e) {
+                console.error('Error loading background data:', e);
+            }
+        }, 100);
+        
+    } catch (error) {
+        console.error('Initialization error:', error);
+        const container = document.querySelector('.container');
+        if (container) {
+            container.insertAdjacentHTML('afterbegin', 
+                `<div class="lb-error">Error: ${error.message}. Please refresh the page.</div>`);
+        }
     }
+}
+
+/**
+ * Initialize when Models tab is shown
+ */
+let modelsTabInitialized = false;
+async function initModelsTab() {
+    if (modelsTabInitialized) return;
     
-    // Store globally
-    globalData.stats = stats;
-    globalData.rawData = rawData;
+    const stats = globalData.stats;
+    if (!stats || stats.model_ranks.length === 0) return;
     
-    // Compute detailed statistics
-    globalData.detailedStats = computeDetailedStats(rawData, stats);
+    // Ensure raw data is loaded for detailed model info
+    await ensureRawDataLoaded();
     
-    // Initialize tabs
-    initTabs();
+    modelsTabInitialized = true;
     
-    // Render Leaderboard tab
-    renderDatasetSotaChart(stats.dataset_sota);
-    renderModelRanksChart(stats.model_ranks);
-    renderLeaderboardTable(stats.model_ranks, globalData.detailedStats, stats.dataset_sota);
+    updateModelInfo(
+        stats.model_ranks[0].model_key,
+        stats.model_ranks,
+        globalData.detailedStats,
+        stats.dataset_sota,
+        globalData.rawData
+    );
     
-    // Render Tasks tab
-    renderTaskCards(stats.dataset_sota);
-    renderTasksTable(stats.dataset_sota);
-    
-    // Render Performance tab (handled by performance.js module)
-    if (typeof initPerformanceTab === 'function') {
-        initPerformanceTab();
-    }
-    
-    // Render Models tab
-    populateModelSelector(stats.model_ranks);
-    if (stats.model_ranks.length > 0) {
-        updateModelInfo(
-            stats.model_ranks[0].model_key,
-            stats.model_ranks,
-            globalData.detailedStats,
-            stats.dataset_sota,
-            rawData
-        );
-    }
-    
-    // Initialize event handlers
-    initSearch();
-    initTaskFilter();
     initModelSelector();
-    initClickableTables();
 }
 
 /**

@@ -387,9 +387,21 @@ async function initPerformanceTab() {
         return;
     }
     
-    container.innerHTML = '<div class="loading-cell">Loading...</div>';
+    container.innerHTML = '<div class="lb-loading"><div class="lb-spinner"></div><p>Loading performance data...</p></div>';
     
-    const rawData = await loadAllData();
+    // Try to use shared data from leaderboard.js first
+    let rawData = null;
+    if (typeof globalData !== 'undefined' && globalData.rawDataLoaded && globalData.rawData) {
+        console.log('Using shared raw data from leaderboard.js');
+        rawData = globalData.rawData;
+    } else if (typeof ensureRawDataLoaded === 'function') {
+        console.log('Loading raw data via ensureRawDataLoaded');
+        rawData = await ensureRawDataLoaded();
+    } else {
+        console.log('Loading raw data directly');
+        rawData = await loadAllData();
+    }
+    
     if (!rawData || Object.keys(rawData).length === 0) {
         container.innerHTML = '<div class="perf-no-data">Failed to load data. Please refresh.</div>';
         return;
