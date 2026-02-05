@@ -1178,8 +1178,11 @@ async function init() {
     console.log('Starting initialization...');
     
     try {
-        // Only load stats.json first (small file, fast)
-        const stats = await loadStats();
+        // Load stats.json and all raw data in parallel for fast loading
+        const [stats, rawData] = await Promise.all([
+            loadStats(),
+            loadAllData()
+        ]);
         
         if (!stats) {
             console.error('Failed to load statistics');
@@ -1193,16 +1196,22 @@ async function init() {
         
         // Store globally
         globalData.stats = stats;
+        globalData.rawData = rawData;
+        globalData.rawDataLoaded = true;
+        
+        // Compute detailed statistics
+        globalData.detailedStats = computeDetailedStats(rawData, stats);
+        
         console.log('Stats loaded, model_ranks:', stats.model_ranks?.length, 'dataset_sota:', Object.keys(stats.dataset_sota || {}).length);
         
         // Initialize tabs first (instant)
         initTabs();
         
-        // Render Leaderboard tab immediately with stats only
+        // Render Leaderboard tab with full data
         console.log('Rendering charts and table...');
         renderDatasetSotaChart(stats.dataset_sota);
         renderModelRanksChart(stats.model_ranks);
-        renderLeaderboardTable(stats.model_ranks, null, stats.dataset_sota);
+        renderLeaderboardTable(stats.model_ranks, globalData.detailedStats, stats.dataset_sota);
         
         // Initialize other components
         initSearch();
@@ -1214,16 +1223,6 @@ async function init() {
         
         console.timeEnd('Page Init');
         console.log('Initialization complete!');
-        
-        // Load raw data in background for features that need it
-        setTimeout(async () => {
-            try {
-                await ensureRawDataLoaded();
-                console.log('Background data loaded');
-            } catch (e) {
-                console.error('Error loading background data:', e);
-            }
-        }, 100);
         
     } catch (error) {
         console.error('Initialization error:', error);
